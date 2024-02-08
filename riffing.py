@@ -96,9 +96,9 @@ def aggframe():
             selected_collaboration = st.slider('Collaboration Score', min_value=0, max_value=100, value=(0, 100))
     return selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration
     col1, col2 = st.columns(2, gap="small")
-    With col1():
+    With col1:
         selected_companies, selected_regions, selected_industries, selected_size = get_comp_filtered_data(df)
-    With col2():
+    With col2:
         selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration = get_score_filtered_data(df)
     filtered_data = filter_dataframe(df, selected_companies, selected_regions, selected_industries, selected_size, selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration)
 
