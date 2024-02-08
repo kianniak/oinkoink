@@ -80,35 +80,31 @@ def create_radar_chart(df, scores, score_columns, selected_company, option, show
 def aggframe(): 
     st.subheader(':sleuth_or_spy: Filters')
     st.markdown('Use the Filters Below to Dynamically Narrow the Data Universe of Companies')
-    col1, col2 = st.columns(2, gap="small")
-
     def get_comp_filtered_data(df):
-        with col1:
-            with st.expander('Company Trait Filters'):
-                selected_companies = st.multiselect('Select by Company Name', options=df['Company'].unique(), key='company_name')
-                selected_regions = st.multiselect('Select by Region', options=df['Region'].unique(), key='region')
-                selected_industries = st.multiselect('Select by Industry', options=df['Industry'].unique(), key='industry')
-                selected_size = st.multiselect('Select by Company Size', options=df['Company Size'].unique(), key='company_size')
-        return selected_companies, selected_regions, selected_industries, selected_size
-
+        with st.expander('Company Trait Filters'):
+            selected_companies = st.multiselect('Select by Company Name', options=df['Company'].unique(), key='company_name')
+            selected_regions = st.multiselect('Select by Region', options=df['Region'].unique(), key='region')
+            selected_industries = st.multiselect('Select by Industry', options=df['Industry'].unique(), key='industry')
+            selected_size = st.multiselect('Select by Company Size', options=df['Company Size'].unique(), key='company_size')
+    return selected_companies, selected_regions, selected_industries, selected_size
     def get_score_filtered_data(df):
-        with col2:
-            with st.expander('Company Score Filters'):
-                selected_oracle = st.slider('Oracle Score', min_value=0, max_value=100, value=(0, 100))
-                selected_culture = st.slider('Culture Score', min_value=0, max_value=100, value=(0, 100))
-                selected_capacity = st.slider('Capacity Score', min_value=0, max_value=100, value=(0, 100))
-                selected_conduct = st.slider('Conduct Score', min_value=0, max_value=100, value=(0, 100))
-                selected_collaboration = st.slider('Collaboration Score', min_value=0, max_value=100, value=(0, 100))
-        return selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration
-
-    comp_data = get_comp_filtered_data(df)
-    score_data = get_score_filtered_data(df)
-    filtered_data = filtered_dataframe(df, *comp_data, *score_data)
+        with st.expander('Company Score Filters'):
+            selected_oracle = st.slider('Oracle Score', min_value=0, max_value=100, value=(0, 100))
+            selected_culture = st.slider('Culture Score', min_value=0, max_value=100, value=(0, 100))
+            selected_capacity = st.slider('Capacity Score', min_value=0, max_value=100, value=(0, 100))
+            selected_conduct = st.slider('Conduct Score', min_value=0, max_value=100, value=(0, 100))
+            selected_collaboration = st.slider('Collaboration Score', min_value=0, max_value=100, value=(0, 100))
+    return selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration
+    col1, col2 = st.columns(2, gap="small")
+    With col1():
+        selected_companies, selected_regions, selected_industries, selected_size = get_comp_filtered_data(df)
+    With col2():
+        selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration = get_score_filtered_data(df)
+    filtered_data = filter_dataframe(df, selected_companies, selected_regions, selected_industries, selected_size, selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration)
 
     def get_b_corp_filter(df):
-        with st.sidebar:
-            is_b_corp = st.checkbox('Only Display Designated B Corps', value=False)
-        return 'Yes' if is_b_corp else None
+        is_b_corp = st.checkbox('Only Display Designated B Corps', value=False)
+    return 'Yes' if is_b_corp else None
 
     b_corp_filter = get_b_corp_filter(df)
     if b_corp_filter is not None:
