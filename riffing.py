@@ -145,14 +145,15 @@ def aggframe():
         mime='text/csv',
     )
 def analysis1():
+    filtered_data = st.session_state['filtered_data']
+    stats = calculate_stats(df, filtered_data, selected_score)
         st.subheader('Select a Score Category to See its Distribution and the Top 5 Best Performing Companies')
         score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score']
         selected_score = st.selectbox('Click To Select Score Category', score_columns)
         st.markdown(f'Top 5 Companies for {selected_score}')
         st.caption(f'These are the Top 5 Companies on the {selected_score}. The arrow shows the distance from the median score value.')
         st.caption('Note: Sub-Components are Normalized between 0 and 100. The Oracle Score is a weighted average of these Normalized Scores. This is to enable comparision among disparate but methodologically similar calculations between datasets')
-        if 'filtered_data' in st.session_state and st.session_state['filtered_data'] is not None:
-            filtered_data = st.session_state['filtered_data']
+        filtered_data = st.session_state['filtered_data']
         top_5_companies = filtered_data.nlargest(5, selected_score)
         cols = st.columns(5) 
         for i, row in enumerate(top_5_companies.iterrows()):
@@ -201,9 +202,9 @@ def analysis1():
         st.markdown(f'This chart shows the Average Scores across Industries for {selected_score}.  Each industry type is colour coded. Filters on the Side Allow us to Isolate Specific Additional Characteristics')          
         stats = calculate_stats(df, filtered_data, selected_score)
         generate_chart(df, stats, selected_score, "industry")
-
 def analysis2():
-    st.subheader(f"{selected_score} Geographical and Company Size Distribution")
+    filtered_data = st.session_state['filtered_data']
+    st.subheader('Geographical and Company Size Distribution")
     score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score']
     selected_score = st.selectbox('Click To Select Score for Statistics on Metrics', score_columns)
     col1, col2 = st.columns([1.7,1])
