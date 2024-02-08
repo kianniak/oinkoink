@@ -91,19 +91,18 @@ def aggframe():
             selected_size = st.multiselect('Select by Company Size', options=df['Company Size'].unique(), key='company_size')
         return selected_companies, selected_regions, selected_industries, selected_size
     def get_score_filtered_data(df):
-        selected_oracle = (0, 100)
-        selected_culture = (0, 100)
-        selected_capacity = (0, 100)
-        selected_conduct = (0, 100)
-        selected_collaboration = (0, 100)
-    return selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration
-
-    with st.expander('Company Score Filters'):
-        selected_oracle = st.slider('Oracle Score', min_value=0, max_value=100, value=(0, 100))
-        selected_culture = st.slider('Culture Score', min_value=0, max_value=100, value=(0, 100))
-        selected_capacity = st.slider('Capacity Score', min_value=0, max_value=100, value=(0, 100))
-        selected_conduct = st.slider('Conduct Score', min_value=0, max_value=100, value=(0, 100))
-        selected_collaboration = st.slider('Collaboration Score', min_value=0, max_value=100, value=(0, 100))
+        selected_oracle = [100]
+        selected_culture = [100]
+        selected_capacity = [100]
+        selected_conduct = [100]
+        selected_collaboration = [100]
+        with st.expander('Company Score Filters'):
+            selected_oracle = st.slider('Oracle Score', min_value=0, max_value=100, value=(0, 100))
+            selected_culture = st.slider('Culture Score', min_value=0, max_value=100, value=(0, 100))
+            selected_capacity = st.slider('Capacity Score', min_value=0, max_value=100, value=(0, 100))
+            selected_conduct = st.slider('Conduct Score', min_value=0, max_value=100, value=(0, 100))
+            selected_collaboration = st.slider('Collaboration Score', min_value=0, max_value=100, value=(0, 100))
+        return selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration
     col1, col2 = st.columns(2, gap="small")
     with col1:
         selected_companies, selected_regions, selected_industries, selected_size = get_comp_filtered_data(df)
