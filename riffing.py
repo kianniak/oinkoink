@@ -11,10 +11,11 @@ import Levenshtein
 from streamlit_option_menu import option_menu
 from streamlit_server_state import server_state, server_state_lock
 import streamlit_shadcn_ui as ui
-from utils import display_columns, load_data, calculate_stats, calculate_metrics, calculate_country_metrics, create_strip_plot, generate_chart, create_company_selectbox, create_gauge_options, create_sdg_chart, sdg_expander, find_closest_match, plot_choropleth, plot_bar_chart, company_trait_filters, score_filters, find_closest_match, filter_dataframe
+from utils import display_columns, load_data, selected_companies, calculate_stats, calculate_metrics, calculate_country_metrics, create_strip_plot, generate_chart, create_company_selectbox, create_gauge_options, create_sdg_chart, sdg_expander, find_closest_match, plot_choropleth, plot_bar_chart, company_trait_filters, score_filters, find_closest_match, filter_dataframe
 
 st.set_page_config(page_title="Oracle Partnerships with Purpose Tool", page_icon="🔍", layout="wide", initial_sidebar_state="expanded")
 df = load_data('oraclecomb.csv')
+
 ##function for IntroPage Text Wall
 def intro_page():
     col1 , col2 = st.columns(2)
