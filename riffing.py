@@ -132,9 +132,9 @@ def aggframe():
     
     st.subheader('Filtered Table')
     st.caption('This table will dynamically update based where you set the sidebar filters. At startup it will show all companies in our analysis')
-    filtered_data = df.sort_values(by='Oracle Score', ascending=False)
-    st.dataframe(filtered_data, use_container_width=True, hide_index=True)
-    csv = filtered_data.to_csv(index=False)
+    filtered_df = filtered_data.sort_values(by='Oracle Score', ascending=False)
+    st.dataframe(filtered_df, use_container_width=True, hide_index=True)
+    csv = filtered_df.to_csv(index=False)
     st.download_button(
         label="Download Filtered data as CSV",
         data=csv,  # 'csv' is the CSV file data
