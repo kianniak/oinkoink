@@ -99,6 +99,8 @@ def get_b_corp_filter(df):
 ###Score Checking
 company_data  = None
 score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score'] 
+selected_score == "Oracle Score"
+@st.cache_data
 def calculate_stats(df, filtered_data, selected_score):
     if selected_score not in df.columns:
         return None
