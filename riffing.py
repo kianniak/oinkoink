@@ -117,7 +117,6 @@ def aggframe():
     b_corp_filter = get_b_corp_filter(df)
     if b_corp_filter is not None:
         filtered_data = filtered_data[filtered_data['B Corp'] == b_corp_filter]
-    stats = calculate_stats(df, filtered_data, selected_score)
 
     score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score']
     selected_score = st.selectbox('Click To Select Score Category', score_columns)
