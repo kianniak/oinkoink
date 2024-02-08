@@ -392,7 +392,6 @@ def sdg_expander():
         '4. **SDG 4: Quality Education** - Ensure inclusive and equitable quality education and promote lifelong learning opportunities for all.\n\n'
         '5. **SDG 5: Gender Equality** - Achieve gender equality and empower all women and girls.\n\n'
         '6. **SDG 6: Clean Water and Sanitation** - Ensure availability and sustainable management of water and sanitation for all. \n\n'
-
         '7. **SDG 7: Affordable and Clean Energy** - Ensure access to affordable, reliable, sustainable, and modern energy for all. \n\n'
         '8. **SDG 8: Decent Work and Economic Growth** - Promote sustained, inclusive, and sustainable economic growth, full and productive employment, and decent work for all. \n\n'
         '9. **SDG 9: Industry, Innovation, and Infrastructure** - Build resilient infrastructure, promote inclusive and sustainable industrialization, and foster innovation.\n\n'
