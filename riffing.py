@@ -147,61 +147,61 @@ def aggframe():
 def analysis1():
     filtered_data = st.session_state['filtered_data']
     stats = calculate_stats(df, filtered_data, selected_score)
-        st.subheader('Select a Score Category to See its Distribution and the Top 5 Best Performing Companies')
-        score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score']
-        selected_score = st.selectbox('Click To Select Score Category', score_columns)
-        st.markdown(f'Top 5 Companies for {selected_score}')
-        st.caption(f'These are the Top 5 Companies on the {selected_score}. The arrow shows the distance from the median score value.')
-        st.caption('Note: Sub-Components are Normalized between 0 and 100. The Oracle Score is a weighted average of these Normalized Scores. This is to enable comparision among disparate but methodologically similar calculations between datasets')
-        filtered_data = st.session_state['filtered_data']
-        top_5_companies = filtered_data.nlargest(5, selected_score)
-        cols = st.columns(5) 
-        for i, row in enumerate(top_5_companies.iterrows()):
-            label = f"{row[1]['Company']}"  
-            value = row[1][selected_score] 
-            cols[i].metric(label=label, value="{:.2f}".format(value), delta = "{:.2f}".format(value - df[selected_score].median()))
-        num_of_columns = 5
-        for j in range(len(top_5_companies), num_of_columns):
-            cols[j].empty()
-        st.divider()
-        st.markdown(f'Mean, Median and Highest Score on {selected_score}')
-        metrics = df[selected_score].describe()
-        industry_median_scores, highest_industry, highest_company, lowest_industry, lowest_company = calculate_metrics(df, selected_score)
-        col1, col2, col3= st.columns(3)
-        with col1:
-            st.metric(label="Median", value=f"{metrics['50%']:.2f}", delta ="None", delta_color="off")
-        with col2:
-            st.metric(label="Mean", value=f"{metrics['mean']:.2f}", delta =f"{metrics['mean'] - metrics['50%']:.2f}")
-        with col3:
-            st.metric(label="Highest Score", value=f"{metrics['max']:.2f}", delta =f"{metrics['max'] - metrics['50%']:.2f}")
-        st.subheader('Swarm Chart of Filtered Metrics')
-        with st.expander('Click To Expand For More Information About Swarm Charts'):
-                st.markdown('Swarm Charts are often used to display distribution on metrics.\n\n'
-                'For example, in a business context, a swarm chart could display customer ratings for different products. Each dot represents a customer rating, and a dense cluster of dots at a high rating level indicates a well-received product.\n\n'
-                'In our Case they show how companies by industry perform across our 4 Cs and the Oracle Score.\n\n'
-                'Swarm charts can quickly highlight patterns in the distribution of scores. This makes them useful for understanding how the scores are distributed which assists in helping us get a feel for the general feel of the distribtution while clearly marking out potential outliers')
-        st.markdown(f'This chart shows the distribution of scores for the {selected_score}.  Each industry type is colour coded. Hover over a value for more information including company name')          
-        swarm_plot = create_strip_plot(filtered_data, selected_score)
-        st.plotly_chart(swarm_plot)
-        st.divider()
-        industry_median_scores, highest_industry, highest_company, lowest_industry, lowest_company = calculate_metrics(df, selected_score)
-        st.subheader(f"{selected_score} and Components by Industry")
-        col1, col2, col3, col4 = st.columns(4)
-        with col1:
-            st.text('Highest Industry (by median):')
-            st.markdown(f'##### {highest_industry}')    
-        with col2:        
-            st.text('Lowest Industry (by median):')
-            st.markdown(f'##### {lowest_industry}')    
-        with col3:
-            st.text('Highest Company:')
-            st.markdown(f'##### {highest_company}')    
-        with col4:
-            st.text('Lowest Company:')
-            st.markdown(f'##### {lowest_company}')
-        st.markdown(f'This chart shows the Average Scores across Industries for {selected_score}.  Each industry type is colour coded. Filters on the Side Allow us to Isolate Specific Additional Characteristics')          
-        stats = calculate_stats(df, filtered_data, selected_score)
-        generate_chart(df, stats, selected_score, "industry")
+    st.subheader('Select a Score Category to See its Distribution and the Top 5 Best Performing Companies')
+    score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score']
+    selected_score = st.selectbox('Click To Select Score Category', score_columns)
+    st.markdown(f'Top 5 Companies for {selected_score}')
+    st.caption(f'These are the Top 5 Companies on the {selected_score}. The arrow shows the distance from the median score value.')
+    st.caption('Note: Sub-Components are Normalized between 0 and 100. The Oracle Score is a weighted average of these Normalized Scores. This is to enable comparision among disparate but methodologically similar calculations between datasets')
+    filtered_data = st.session_state['filtered_data']
+    top_5_companies = filtered_data.nlargest(5, selected_score)
+    cols = st.columns(5) 
+    for i, row in enumerate(top_5_companies.iterrows()):
+        label = f"{row[1]['Company']}"  
+        value = row[1][selected_score] 
+        cols[i].metric(label=label, value="{:.2f}".format(value), delta = "{:.2f}".format(value - df[selected_score].median()))
+    num_of_columns = 5
+    for j in range(len(top_5_companies), num_of_columns):
+        cols[j].empty()
+    st.divider()
+    st.markdown(f'Mean, Median and Highest Score on {selected_score}')
+    metrics = df[selected_score].describe()
+    industry_median_scores, highest_industry, highest_company, lowest_industry, lowest_company = calculate_metrics(df, selected_score)
+    col1, col2, col3= st.columns(3)
+    with col1:
+        st.metric(label="Median", value=f"{metrics['50%']:.2f}", delta ="None", delta_color="off")
+    with col2:
+        st.metric(label="Mean", value=f"{metrics['mean']:.2f}", delta =f"{metrics['mean'] - metrics['50%']:.2f}")
+    with col3:
+        st.metric(label="Highest Score", value=f"{metrics['max']:.2f}", delta =f"{metrics['max'] - metrics['50%']:.2f}")
+    st.subheader('Swarm Chart of Filtered Metrics')
+    with st.expander('Click To Expand For More Information About Swarm Charts'):
+            st.markdown('Swarm Charts are often used to display distribution on metrics.\n\n'
+            'For example, in a business context, a swarm chart could display customer ratings for different products. Each dot represents a customer rating, and a dense cluster of dots at a high rating level indicates a well-received product.\n\n'
+            'In our Case they show how companies by industry perform across our 4 Cs and the Oracle Score.\n\n'
+            'Swarm charts can quickly highlight patterns in the distribution of scores. This makes them useful for understanding how the scores are distributed which assists in helping us get a feel for the general feel of the distribtution while clearly marking out potential outliers')
+    st.markdown(f'This chart shows the distribution of scores for the {selected_score}.  Each industry type is colour coded. Hover over a value for more information including company name')          
+    swarm_plot = create_strip_plot(filtered_data, selected_score)
+    st.plotly_chart(swarm_plot)
+    st.divider()
+    industry_median_scores, highest_industry, highest_company, lowest_industry, lowest_company = calculate_metrics(df, selected_score)
+    st.subheader(f"{selected_score} and Components by Industry")
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.text('Highest Industry (by median):')
+        st.markdown(f'##### {highest_industry}')    
+    with col2:        
+        st.text('Lowest Industry (by median):')
+        st.markdown(f'##### {lowest_industry}')    
+    with col3:
+        st.text('Highest Company:')
+        st.markdown(f'##### {highest_company}')    
+    with col4:
+        st.text('Lowest Company:')
+        st.markdown(f'##### {lowest_company}')
+    st.markdown(f'This chart shows the Average Scores across Industries for {selected_score}.  Each industry type is colour coded. Filters on the Side Allow us to Isolate Specific Additional Characteristics')          
+    stats = calculate_stats(df, filtered_data, selected_score)
+    generate_chart(df, stats, selected_score, "industry")
 def analysis2():
     filtered_data = st.session_state['filtered_data']
     st.subheader('Geographical and Company Size Distribution")
