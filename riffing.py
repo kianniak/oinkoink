@@ -80,71 +80,75 @@ def aggframe():
     st.subheader(':sleuth_or_spy: Filters')
     st.markdown('Use the Filters Below to Dynamically Narrow the Data Universe of Companies')
     col1, col2 = st.columns(2, gap="small")
-def get_comp_filtered_data(df):
-    with st.expander('Company Trait Filters'):
-        selected_companies = st.multiselect('Select by Company Name', options=df['Company'].unique(), key='company_name')
-        selected_regions = st.multiselect('Select by Region', options=df['Region'].unique(), key='region')
-        selected_industries = st.multiselect('Select by Industry', options=df['Industry'].unique(), key='industry')
-        selected_size = st.multiselect('Select by Company Size', options=df['Company Size'].unique(), key='company_size')
-    return filtered_comp_data
-
-def get_score_filtered_data(df):
-    with st.expander('Company Score Filters'):
-        selected_oracle = st.slider('Oracle Score', min_value=0, max_value=100, value=(0, 100))
-        selected_culture = st.slider('Culture Score', min_value=0, max_value=100, value=(0, 100))
-        selected_capacity = st.slider('Capacity Score', min_value=0, max_value=100, value=(0, 100))
-        selected_conduct = st.slider('Conduct Score', min_value=0, max_value=100, value=(0, 100))
-        selected_collaboration = st.slider('Collaboration Score', min_value=0, max_value=100, value=(0, 100))
-    return filtered_score_data
-
-filtered_data = get_score_filtered_data(df)| get_comp_filtered_data(df)
-b_corp_filter = filtered_score_data(df)
-if b_corp_filter is not None:
-    filtered_data = filtered_data[filtered_data['B Corp'] == b_corp_filter]
-    stats = calculate_stats(df, filtered_data, selected_score)
-    filtered_data = filter_dataframe(df, selected_companies, selected_regions, selected_industries, selected_size, selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration)
-
-def get_b_corp_filter(df):
-    is_b_corp = st.checkbox('Only Display Designated B Corps', value=False)
-    return 'Yes' if is_b_corp else None  
     with col1:
-        with st.expander('Company Trait Filters'):
-            selected_companies = st.multiselect('Select by Company Name', options=df['Company'].unique(), key='company_name')
-            selected_regions = st.multiselect('Select by Region', options=df['Region'].unique(), key='region')
-            selected_industries = st.multiselect('Select by Industry', options=df['Industry'].unique(), key='industry')
-            selected_size = st.multiselect('Select by Company Size', options=df['Company Size'].unique(), key='company_size')
-    
+        def get_comp_filtered_data(df):
+            with st.expander('Company Trait Filters'):
+                selected_companies = st.multiselect('Select by Company Name', options=df['Company'].unique(), key='company_name')
+                selected_regions = st.multiselect('Select by Region', options=df['Region'].unique(), key='region')
+                selected_industries = st.multiselect('Select by Industry', options=df['Industry'].unique(), key='industry')
+                selected_size = st.multiselect('Select by Company Size', options=df['Company Size'].unique(), key='company_size')
+            get_comp_filtered_data(df, selected_companies, selected_regions, selected_industries, selected_size)
+            return get_comp_filtered_data
     with col2:
-        with st.expander('Company Score Filters'):
-            selected_oracle = st.slider('Oracle Score', min_value=0, max_value=100, value=(0, 100), key='oracle_score')
-            selected_culture = st.slider('Culture Score', min_value=0, max_value=100, value=(0, 100), key='culture_score')
-            selected_capacity = st.slider('Capacity Score', min_value=0, max_value=100, value=(0, 100), key='capacity_score')
-            selected_conduct = st.slider('Conduct Score', min_value=0, max_value=100, value=(0, 100), key='conduct_score')
-            selected_collaboration = st.slider('Collaboration Score', min_value=0, max_value=100, value=(0, 100), key = 'collaboration_score')
-    filtered_data = filter_dataframe(df, selected_companies, selected_regions, selected_industries, selected_size, selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration)
-    score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score']
-    selected_score = st.selectbox('Click To Select Score Category', score_columns)
-    st.subheader("Oracle Score Dashboard")
-    st.markdown('Stats for Current Filtered Universe')  
-    col1 , col2, col3, col4 = st.columns(4)
-    stats= 5
-    stats = calculate_stats(filtered_data, stats, selected_score)
-    col1.metric(label="Total Companies", value=f"{stats['total_filtered_companies']:,}")
-    col2.metric(label="UK Companies", value=f"{stats['total_filtered_uk_companies']:,}")
-    col3.metric(label="Highest Oracle Score", value="{:.2f}".format(stats['highest_oracle_score']))
-    col4.metric(label="Median Oracle Score", value="{:.2f}".format(stats['median_oracle_score']))
-
-    st.subheader('Filtered Table')
-    st.caption('This table will dynamically update based where you set the sidebar filters. At startup it will show all companies in our analysis')
-    filtered_data = df.sort_values(by='Oracle Score', ascending=False)
-    st.dataframe(filtered_data, use_container_width=True, hide_index=True)
-    csv = filtered_data.to_csv(index=False)
-    st.download_button(
-        label="Download Filtered data as CSV",
-        data=csv,  # 'csv' is the CSV file data
-        file_name='oraclecombfiltered.csv',
-        mime='text/csv',
-    )
+        def get_score_filtered_data(df):
+            with st.expander('Company Score Filters'):
+                selected_oracle = st.slider('Oracle Score', min_value=0, max_value=100, value=(0, 100))
+                selected_culture = st.slider('Culture Score', min_value=0, max_value=100, value=(0, 100))
+                selected_capacity = st.slider('Capacity Score', min_value=0, max_value=100, value=(0, 100))
+                selected_conduct = st.slider('Conduct Score', min_value=0, max_value=100, value=(0, 100))
+                selected_collaboration = st.slider('Collaboration Score', min_value=0, max_value=100, value=(0, 100))
+            get_score_filtered_data  = filter_dataframe(df, selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration)
+            return get_score_filtered_data
+    get_comp_filtered_data(df)|get_score_filtered_data(df) = filtered_dataframe(df)
+    def get_b_corp_filter(df):
+    with st.sidebar:
+        is_b_corp = st.checkbox('Only Display Designated B Corps', value=False)
+        return 'Yes' if is_b_corp else None    
+    b_corp_filter = gfiltered_dataframe(df)
+    if b_corp_filter is not None:
+        filtered_dataframe(df) = filtered_data[filtered_data['B Corp'] == b_corp_filter]
+        stats = calculate_stats(df, filtered_data, selected_score)    
+    def get_b_corp_filter(df):
+        is_b_corp = st.checkbox('Only Display Designated B Corps', value=False)
+        return 'Yes' if is_b_corp else None  
+        with col1:
+            with st.expander('Company Trait Filters'):
+                selected_companies = st.multiselect('Select by Company Name', options=df['Company'].unique(), key='company_name')
+                selected_regions = st.multiselect('Select by Region', options=df['Region'].unique(), key='region')
+                selected_industries = st.multiselect('Select by Industry', options=df['Industry'].unique(), key='industry')
+                selected_size = st.multiselect('Select by Company Size', options=df['Company Size'].unique(), key='company_size')
+        
+        with col2:
+            with st.expander('Company Score Filters'):
+                selected_oracle = st.slider('Oracle Score', min_value=0, max_value=100, value=(0, 100), key='oracle_score')
+                selected_culture = st.slider('Culture Score', min_value=0, max_value=100, value=(0, 100), key='culture_score')
+                selected_capacity = st.slider('Capacity Score', min_value=0, max_value=100, value=(0, 100), key='capacity_score')
+                selected_conduct = st.slider('Conduct Score', min_value=0, max_value=100, value=(0, 100), key='conduct_score')
+                selected_collaboration = st.slider('Collaboration Score', min_value=0, max_value=100, value=(0, 100), key = 'collaboration_score')
+        filtered_data = filter_dataframe(df, selected_companies, selected_regions, selected_industries, selected_size, selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration)
+        score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score']
+        selected_score = st.selectbox('Click To Select Score Category', score_columns)
+        st.subheader("Oracle Score Dashboard")
+        st.markdown('Stats for Current Filtered Universe')  
+        col1 , col2, col3, col4 = st.columns(4)
+        stats= 5
+        stats = calculate_stats(filtered_data, stats, selected_score)
+        col1.metric(label="Total Companies", value=f"{stats['total_filtered_companies']:,}")
+        col2.metric(label="UK Companies", value=f"{stats['total_filtered_uk_companies']:,}")
+        col3.metric(label="Highest Oracle Score", value="{:.2f}".format(stats['highest_oracle_score']))
+        col4.metric(label="Median Oracle Score", value="{:.2f}".format(stats['median_oracle_score']))
+    
+        st.subheader('Filtered Table')
+        st.caption('This table will dynamically update based where you set the sidebar filters. At startup it will show all companies in our analysis')
+        filtered_data = df.sort_values(by='Oracle Score', ascending=False)
+        st.dataframe(filtered_data, use_container_width=True, hide_index=True)
+        csv = filtered_data.to_csv(index=False)
+        st.download_button(
+            label="Download Filtered data as CSV",
+            data=csv,  # 'csv' is the CSV file data
+            file_name='oraclecombfiltered.csv',
+            mime='text/csv',
+        )
 def analysis1():
         st.subheader('Select a Score Category to See its Distribution and the Top 5 Best Performing Companies')
         score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score']
