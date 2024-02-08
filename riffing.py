@@ -85,7 +85,7 @@ def aggframe():
     col1, col2 = st.columns(2, gap="small")
     with col1:
         with st.expander('Company Trait Filters'):
-            stcompany_trait_filters()
+            company_trait_filters()
     with col2:
         with st.expander('Company Score Filters'):
             score_filters()
