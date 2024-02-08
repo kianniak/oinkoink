@@ -117,14 +117,14 @@ def aggframe():
     b_corp_filter = get_b_corp_filter(df)
     if b_corp_filter is not None:
         filtered_data = filtered_data[filtered_data['B Corp'] == b_corp_filter]
+    stats = calculate_stats(df, filtered_data, selected_score)
 
     score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score']
     selected_score = st.selectbox('Click To Select Score Category', score_columns)
     st.subheader("Oracle Score Dashboard")
     st.markdown('Stats for Current Filtered Universe')  
     col1 , col2, col3, col4 = st.columns(4)
-    stats= 5
-    stats = calculate_stats(filtered_data, stats, selected_score)
+    stats = calculate_stats(df, filtered_data, selected_score)
     col1.metric(label="Total Companies", value=f"{stats['total_filtered_companies']:,}")
     col2.metric(label="UK Companies", value=f"{stats['total_filtered_uk_companies']:,}")
     col3.metric(label="Highest Oracle Score", value="{:.2f}".format(stats['highest_oracle_score']))
