@@ -254,19 +254,19 @@ def find_closest_match(country, recognized_countries):
 def calculate_country_metrics(df, selected_country='United Kingdom'):
     if 'Country' not in df.columns:
         return None
-    filtered_data = df.groupby('Country').filter(lambda x: len(x) > 20)
+    filtered_data2 = df.groupby('Country').filter(lambda x: len(x) > 20)
     total_countries = df['Country'].nunique()
-    total_filtered_countries = filtered_data['Country'].nunique()
+    total_filtered_countries = filtered_data2['Country'].nunique()
     percentage_of_countries_shown = total_filtered_countries / total_countries * 100
     total_companies_in_selected_country = len(df[df['Country'] == selected_country])
-    total_filtered_companies_in_selected_country = len(filtered_data[filtered_data['Country'] == selected_country])
+    total_filtered_companies_in_selected_country = len(filtered_data2[filtered_data2['Country'] == selected_country])
     percentage_of_selected_country_companies_shown = total_filtered_companies_in_selected_country / total_companies_in_selected_country * 100 if total_companies_in_selected_country > 0 else 0
-    most_companies_country = filtered_data['Country'].value_counts().idxmax()
-    most_companies_count = filtered_data['Country'].value_counts().max()
-    highest_avg_score_country = filtered_data.groupby('Country')['Oracle Score'].mean().idxmax()
-    highest_avg_score_value = filtered_data.groupby('Country')['Oracle Score'].mean().max()
-    lowest_avg_score_country = filtered_data.groupby('Country')['Oracle Score'].mean().idxmin()
-    lowest_avg_score_value = filtered_data.groupby('Country')['Oracle Score'].mean().min()
+    most_companies_country = filtered_data2['Country'].value_counts().idxmax()
+    most_companies_count = filtered_data2['Country'].value_counts().max()
+    highest_avg_score_country = filtered_data2.groupby('Country')['Oracle Score'].mean().idxmax()
+    highest_avg_score_value = filtered_data2.groupby('Country')['Oracle Score'].mean().max()
+    lowest_avg_score_country = filtered_data2.groupby('Country')['Oracle Score'].mean().idxmin()
+    lowest_avg_score_value = filtered_data2.groupby('Country')['Oracle Score'].mean().min()
     return {
         "total_countries": total_countries,
         "total_filtered_countries": total_filtered_countries,
