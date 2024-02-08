@@ -146,10 +146,10 @@ def aggframe():
     )
 def analysis1():
     filtered_data = st.session_state['filtered_data']
-    stats = calculate_stats(df, filtered_data, selected_score)
     st.subheader('Select a Score Category to See its Distribution and the Top 5 Best Performing Companies')
     score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score']
     selected_score = st.selectbox('Click To Select Score Category', score_columns)
+    stats = calculate_stats(df, filtered_data, selected_score)
     st.markdown(f'Top 5 Companies for {selected_score}')
     st.caption(f'These are the Top 5 Companies on the {selected_score}. The arrow shows the distance from the median score value.')
     st.caption('Note: Sub-Components are Normalized between 0 and 100. The Oracle Score is a weighted average of these Normalized Scores. This is to enable comparision among disparate but methodologically similar calculations between datasets')
@@ -207,10 +207,11 @@ def analysis2():
     st.subheader('Geographical and Company Size Distribution')
     score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score']
     selected_score = st.selectbox('Click To Select Score for Statistics on Metrics', score_columns)
+    stats = calculate_stats(df, filtered_data, selected_score)
     col1, col2 = st.columns([1.7,1])
     with col1:
-        country_metrics = calculate_country_metrics(df)
-        generate_chart(df, stats, selected_score, "region")
+        country_metrics = calculate_country_metrics(filtered_data)
+        generate_chart(filtered_data, stats, selected_score, "region")
     st.divider()
     with col2:
         generate_chart(df, filtered_data, selected_score, "size")
