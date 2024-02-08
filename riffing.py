@@ -112,8 +112,8 @@ def aggframe():
 
     def get_b_corp_filter(df):
         is_b_corp = st.checkbox('Only Display Designated B Corps', value=False)
-    return 'Yes' if is_b_corp else None
-
+        return 'Yes' if is_b_corp else None
+    
     b_corp_filter = get_b_corp_filter(df)
     if b_corp_filter is not None:
         filtered_data = filtered_data[filtered_data['B Corp'] == b_corp_filter]
