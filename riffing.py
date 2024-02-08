@@ -108,7 +108,7 @@ def aggframe():
         selected_companies, selected_regions, selected_industries, selected_size = get_comp_filtered_data(df)
     with col2:
         selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration = get_score_filtered_data(df)
-    global filtered_data = filter_dataframe(df, selected_companies, selected_regions, selected_industries, selected_size, selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration)
+     filtered_data = filter_dataframe(df, selected_companies, selected_regions, selected_industries, selected_size, selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration)
 
     def get_b_corp_filter(df):
         is_b_corp = st.checkbox('Only Display Designated B Corps', value=False)
