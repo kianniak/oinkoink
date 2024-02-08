@@ -117,7 +117,11 @@ def aggframe():
     b_corp_filter = get_b_corp_filter(df)
     if b_corp_filter is not None:
         filtered_data = filtered_data[filtered_data['B Corp'] == b_corp_filter]
+        
+    score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score']
+    selected_score = st.selectbox('Click To Select Score Category', score_columns)
     stats = calculate_stats(df, filtered_data, selected_score)
+    
     st.subheader("Oracle Score Dashboard")
     st.markdown('Stats for Current Filtered Universe')  
     col1 , col2, col3, col4 = st.columns(4)
@@ -140,8 +144,6 @@ def aggframe():
     )
 def analysis1():
         st.subheader('Select a Score Category to See its Distribution and the Top 5 Best Performing Companies')
-        score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score']
-        selected_score = st.selectbox('Click To Select Score Category', score_columns)
         st.markdown(f'Top 5 Companies for {selected_score}')
         st.caption(f'These are the Top 5 Companies on the {selected_score}. The arrow shows the distance from the median score value.')
         st.caption('Note: Sub-Components are Normalized between 0 and 100. The Oracle Score is a weighted average of these Normalized Scores. This is to enable comparision among disparate but methodologically similar calculations between datasets')
