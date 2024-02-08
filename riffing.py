@@ -204,7 +204,7 @@ def analysis1():
     generate_chart(df, stats, selected_score, "industry")
 def analysis2():
     filtered_data = st.session_state['filtered_data']
-    st.subheader('Geographical and Company Size Distribution")
+    st.subheader('Geographical and Company Size Distribution')
     score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score']
     selected_score = st.selectbox('Click To Select Score for Statistics on Metrics', score_columns)
     col1, col2 = st.columns([1.7,1])
