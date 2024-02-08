@@ -103,7 +103,7 @@ def calculate_stats(df, filtered_data, selected_score):
     if selected_score not in df.columns:
         return None
     total_companies = len(df)
-    total_filtered_companies = len(temp_df)
+    total_filtered_companies = len(filtered_data)
     percentage_of_companies_shown = total_filtered_companies / total_companies * 100
     total_uk_companies = len(df[df['Country'] == 'United Kingdom'])
     total_filtered_uk_companies = len(filtered_data[filtered_data['Country'] == 'United Kingdom'])
