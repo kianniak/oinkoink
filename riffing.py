@@ -13,7 +13,7 @@ from streamlit_server_state import server_state, server_state_lock
 import streamlit_shadcn_ui as ui
 from utils import display_columns, load_data, calculate_stats, calculate_metrics, calculate_country_metrics, create_strip_plot, generate_chart, create_company_selectbox, create_gauge_options, create_sdg_chart, sdg_expander, find_closest_match, plot_choropleth, plot_bar_chart, company_trait_filters, score_filters, find_closest_match, filter_dataframe
 
-st.set_page_config(page_title="Oracle Partnerships with Purpose Tool", page_icon="🔍", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="Oracle Partnerships with Purpose Tool", page_icon="🔍", layout="wide", initial_sidebar_state="expanded")
 df = load_data('oraclecomb.csv')
 ##function for IntroPage Text Wall
 def intro_page():
@@ -25,7 +25,7 @@ def intro_page():
                 'It contains over 6,000 companies and assesses them based on our 4 C Framework represented by the **Oracle Score** and its subcomponents the, **Culture Score**, **Capactiy Score**, **Conduct Score**, and **Collaboration Score**.')
         st.divider()
         st.subheader('Things to Note')
-        st.markdown('Please note that navigating between pages using the sidebar will reset the view while navigating between tabs will keep the filters intact. If an error occurs it is likely interaction between different sections filters. Please reset filters and try again.\n\n'
+        st.markdown('Please note that navigating between pages will reset the view while navigating between tabs will keep the filters intact. If an error occurs it is likely interaction between different sections filters. Please reset filters and try again.\n\n'
                 '**To better Understand terminology, data sources and calcultations, please refer to the additional tabs above this page**. This will give you a better understanding of key concepts such as the Sustainable Development Goals (SDGS), B Corp Methodology, Culture Indicators & Financial Metrics used and how we calculate our Oracle Score and its subcomponents. \n\n')
         st.markdown('Further information on calculations, datasources and our freely shared code can be found on our Github. We are working to completely automate the collection and cleaning of data consistently and will update Oracle when we hit this milestone')
     with col2:
@@ -105,7 +105,6 @@ if b_corp_filter is not None:
     filtered_data = filter_dataframe(df, selected_companies, selected_regions, selected_industries, selected_size, selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration)
 
 def get_b_corp_filter(df):
-with st.sidebar:
     is_b_corp = st.checkbox('Only Display Designated B Corps', value=False)
     return 'Yes' if is_b_corp else None  
     with col1:
