@@ -77,7 +77,6 @@ def create_radar_chart(df, scores, score_columns, selected_company, option, show
 
 ###second Page
 def aggframe(): 
-    filtered_data = filter_dataframe(df, selected_companies, selected_regions, selected_industries, selected_size, selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration)
     st.subheader(':sleuth_or_spy: Filters')
     st.markdown('Use the Filters Below to Dynamically Narrow the Data Universe of Companies')
     col1, col2 = st.columns(2, gap="small")
@@ -87,6 +86,7 @@ def aggframe():
     with col2:
         with st.expander('Company Score Filters'):
             score_filters()
+    filtered_data = filter_dataframe(df, selected_companies, selected_regions, selected_industries, selected_size, selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration)
     selected_score =df['Oracle Score']
     st.subheader("Oracle Score Dashboard")
     st.markdown('Stats for Current Filtered Universe')  
