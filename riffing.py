@@ -80,20 +80,29 @@ def aggframe():
     st.subheader(':sleuth_or_spy: Filters')
     st.markdown('Use the Filters Below to Dynamically Narrow the Data Universe of Companies')
     def get_comp_filtered_data(df):
+        selected_companies = []
+        selected_regions = []
+        selected_industries = []
+        selected_size = []
         with st.expander('Company Trait Filters'):
             selected_companies = st.multiselect('Select by Company Name', options=df['Company'].unique(), key='company_name')
             selected_regions = st.multiselect('Select by Region', options=df['Region'].unique(), key='region')
             selected_industries = st.multiselect('Select by Industry', options=df['Industry'].unique(), key='industry')
             selected_size = st.multiselect('Select by Company Size', options=df['Company Size'].unique(), key='company_size')
-    return selected_companies, selected_regions, selected_industries, selected_size
+        return selected_companies, selected_regions, selected_industries, selected_size
     def get_score_filtered_data(df):
+        selected_oracle = (0, 100)
+        selected_culture = (0, 100)
+        selected_capacity = (0, 100)
+        selected_conduct = (0, 100)
+        selected_collaboration = (0, 100)
         with st.expander('Company Score Filters'):
             selected_oracle = st.slider('Oracle Score', min_value=0, max_value=100, value=(0, 100))
             selected_culture = st.slider('Culture Score', min_value=0, max_value=100, value=(0, 100))
             selected_capacity = st.slider('Capacity Score', min_value=0, max_value=100, value=(0, 100))
             selected_conduct = st.slider('Conduct Score', min_value=0, max_value=100, value=(0, 100))
             selected_collaboration = st.slider('Collaboration Score', min_value=0, max_value=100, value=(0, 100))
-    return selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration
+        return selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration
     col1, col2 = st.columns(2, gap="small")
     with col1:
         selected_companies, selected_regions, selected_industries, selected_size = get_comp_filtered_data(df)
