@@ -98,7 +98,6 @@ def get_b_corp_filter(df):
     filtered_data = filter_dataframe(df, selected_companies, selected_regions, selected_industries, selected_size, selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration)
 ###Score Checking
 company_data  = None
-selected_score == []
 score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score'] 
 selected_score == "Oracle Score"
 def calculate_stats(df, filtered_data, selected_score):
