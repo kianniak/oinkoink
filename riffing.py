@@ -146,6 +146,8 @@ def aggframe():
     )
 def analysis1():
         st.subheader('Select a Score Category to See its Distribution and the Top 5 Best Performing Companies')
+        score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score']
+        selected_score = st.selectbox('Click To Select Score Category', score_columns)
         st.markdown(f'Top 5 Companies for {selected_score}')
         st.caption(f'These are the Top 5 Companies on the {selected_score}. The arrow shows the distance from the median score value.')
         st.caption('Note: Sub-Components are Normalized between 0 and 100. The Oracle Score is a weighted average of these Normalized Scores. This is to enable comparision among disparate but methodologically similar calculations between datasets')
@@ -202,6 +204,7 @@ def analysis1():
 
 def analysis2():
     st.subheader(f"{selected_score} Geographical and Company Size Distribution")
+    score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score']
     selected_score = st.selectbox('Click To Select Score for Statistics on Metrics', score_columns)
     col1, col2 = st.columns([1.7,1])
     with col1:
