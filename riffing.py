@@ -118,9 +118,6 @@ def aggframe():
     if b_corp_filter is not None:
         filtered_data = filtered_data[filtered_data['B Corp'] == b_corp_filter]
     stats = calculate_stats(df, filtered_data, selected_score)
-
-    score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score']
-    selected_score = st.selectbox('Click To Select Score Category', score_columns)
     st.subheader("Oracle Score Dashboard")
     st.markdown('Stats for Current Filtered Universe')  
     col1 , col2, col3, col4 = st.columns(4)
