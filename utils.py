@@ -82,10 +82,6 @@ def score_filters():
     selected_collaboration = st.slider('Collaboration Score', min_value=0, max_value=100, value=(0, 100), key = 'collaboration_score')
     return selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration
 
-# Unpack the returned values from score_filters() and company_trait_filters()
-selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration = score_filters()
-selected_companies, selected_regions, selected_industries, selected_size = company_trait_filters()
-
 # Pass the unpacked values to filter_dataframe
 filtered_data = filter_dataframe(df, selected_companies, selected_regions, selected_industries, selected_size, selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration)
 ###Score Checking
@@ -95,7 +91,7 @@ def calculate_stats(df, filtered_data, selected_score):
     if selected_score not in df.columns:
         return None
     total_companies = len(df)
-    total_filtered_companies = len(filtered_data)
+    total_filtered_companies = len(temp_df)
     percentage_of_companies_shown = total_filtered_companies / total_companies * 100
     total_uk_companies = len(df[df['Country'] == 'United Kingdom'])
     total_filtered_uk_companies = len(filtered_data[filtered_data['Country'] == 'United Kingdom'])
