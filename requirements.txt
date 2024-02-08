@@ -130,7 +130,6 @@ streamlit-option-menu==0.3.12
 streamlit-server-state==0.17.1
 streamlit-shadcn-ui==0.1.18
 streamlit-toggle-switch==1.0.2
-streamlit-vertical-slider==1.0.2
 streamviz==5.1
 tenacity==8.2.3
 thinc==8.2.1
