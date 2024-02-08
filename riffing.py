@@ -85,10 +85,11 @@ def aggframe():
     col1, col2 = st.columns(2, gap="small")
     with col1:
         with st.expander('Company Trait Filters'):
-              company_trait_filters()
+            stcompany_trait_filters()
     with col2:
         with st.expander('Company Score Filters'):
-                score_filters(),
+            score_filters()
+    filtered_data = filter_dataframe(df, selected_companies, selected_regions, selected_industries, selected_size, selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration)
     selected_score =df['Oracle Score']
     st.subheader("Oracle Score Dashboard")
     st.markdown('Stats for Current Filtered Universe')  
