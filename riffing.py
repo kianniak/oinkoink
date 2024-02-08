@@ -150,7 +150,7 @@ def analysis1():
         st.caption(f'These are the Top 5 Companies on the {selected_score}. The arrow shows the distance from the median score value.')
         st.caption('Note: Sub-Components are Normalized between 0 and 100. The Oracle Score is a weighted average of these Normalized Scores. This is to enable comparision among disparate but methodologically similar calculations between datasets')
         if 'filtered_data' in st.session_state and st.session_state['filtered_data'] is not None:
-        filtered_data = st.session_state['filtered_data']
+            filtered_data = st.session_state['filtered_data']
         top_5_companies = filtered_data.nlargest(5, selected_score)
         cols = st.columns(5) 
         for i, row in enumerate(top_5_companies.iterrows()):
