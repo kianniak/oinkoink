@@ -96,27 +96,30 @@ def aggframe():
         selected_capacity = (0, 100)
         selected_conduct = (0, 100)
         selected_collaboration = (0, 100)
+    return selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration
+
         with st.expander('Company Score Filters'):
             selected_oracle = st.slider('Oracle Score', min_value=0, max_value=100, value=(0, 100))
             selected_culture = st.slider('Culture Score', min_value=0, max_value=100, value=(0, 100))
             selected_capacity = st.slider('Capacity Score', min_value=0, max_value=100, value=(0, 100))
             selected_conduct = st.slider('Conduct Score', min_value=0, max_value=100, value=(0, 100))
             selected_collaboration = st.slider('Collaboration Score', min_value=0, max_value=100, value=(0, 100))
-        return selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration
     col1, col2 = st.columns(2, gap="small")
     with col1:
         selected_companies, selected_regions, selected_industries, selected_size = get_comp_filtered_data(df)
     with col2:
         selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration = get_score_filtered_data(df)
         filtered_data = filter_dataframe(df, selected_companies, selected_regions, selected_industries, selected_size, selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration)
-
+        if filtered_data not in st.session_state:
+            st.session_state['filtered_data'] = None
     def get_b_corp_filter(df):
         is_b_corp = st.checkbox('Only Display Designated B Corps', value=False)
-    return 'Yes' if is_b_corp else None
+        return 'Yes' if is_b_corp else None
     
     b_corp_filter = get_b_corp_filter(df)
     if b_corp_filter is not None:
         filtered_data = filtered_data[filtered_data['B Corp'] == b_corp_filter]
+    st.session_state['filtered_data'] = filter_dataframe(df, selected_companies, ...)
 
     score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score']
     selected_score = st.selectbox('Click To Select Score Category', score_columns)
