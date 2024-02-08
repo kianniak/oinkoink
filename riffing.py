@@ -108,11 +108,11 @@ def aggframe():
         selected_companies, selected_regions, selected_industries, selected_size = get_comp_filtered_data(df)
     with col2:
         selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration = get_score_filtered_data(df)
-     filtered_data = filter_dataframe(df, selected_companies, selected_regions, selected_industries, selected_size, selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration)
+        filtered_data = filter_dataframe(df, selected_companies, selected_regions, selected_industries, selected_size, selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration)
 
     def get_b_corp_filter(df):
         is_b_corp = st.checkbox('Only Display Designated B Corps', value=False)
-        return 'Yes' if is_b_corp else None
+    return 'Yes' if is_b_corp else None
     
     b_corp_filter = get_b_corp_filter(df)
     if b_corp_filter is not None:
@@ -210,12 +210,12 @@ def analysis2():
     recognized_countries = df_gapminder['country'].unique()
     df['Mapped Country'] = df['Country'].apply(lambda country: find_closest_match(country, recognized_countries))
     df['Country'] = df['Mapped Country']            
-    country_counts = filtered_data['Country'].value_counts().reset_index()
+    country_counts = filtered_data2['Country'].value_counts().reset_index()
     country_counts.columns = ['Country', 'count']
-    df = filtered_data.groupby('Country').filter(lambda x: len(x) > 20)
+    df = filtered_data2.groupby('Country').filter(lambda x: len(x) > 20)
     st.subheader('Oracle Score Coverage: Regional Concentrations')
     col1, col2, col3, col4 = st.columns(4)
-    country_metrics_data = calculate_stats(df, filtered_data, selected_score)
+    country_metrics_data = calculate_stats(df, filtered_data2, selected_score)
     with col1:
         st.metric(label="Home Market Companies Rated", value=f"UK - {country_metrics_data['total_uk_companies']:,}")
     with col2:
