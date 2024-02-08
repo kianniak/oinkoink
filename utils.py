@@ -43,7 +43,6 @@ def load_data(file_name):
     df['B Corp'] = df['B Corp'].replace({1: 'Yes', 0: 'No'})
     df = df.sort_values(by='Oracle Score', ascending=True)
     return df
-st.set_page_config(page_title="Oracle Partnerships with Purpose Tool", page_icon="🔍", layout="wide", initial_sidebar_state="collapsed")
 df = load_data('oraclecomb.csv')
 ##high level filters
 def filter_dataframe(df, company_names, regions, industries, company_sizes, oracle_range, culture_range, capacity_range, conduct_range, collaboration_range):
