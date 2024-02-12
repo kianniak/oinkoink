@@ -21,27 +21,25 @@ df = load_data('oraclecomb.csv')
 def intro_page():
     col1 , col2 = st.columns(2)
     with col1:
-        with st.container(border=True):
-            st.subheader("Oracle Tool: Introduction")
-            st.markdown(f'###### Welcome! :wave:')
-            st.markdown('This Tool has been designed to assist Oracle in Filtering through potential corporate partners.\n\n'
-                'It contains over 6,000 companies and assesses them based on our 4 C Framework represented by the **Oracle Score** and its subcomponents the, **Culture Score**, **Capactiy Score**, **Conduct Score**, and **Collaboration Score**.')
-            st.divider()
-            st.subheader('Things to Note')
-            st.markdown('Please note that navigating between pages will reset the view while navigating between tabs will keep the filters intact. If an error occurs it is likely interaction between different sections filters. Please reset filters and try again.\n\n'
-                '**To better Understand terminology, data sources and calcultations, please refer to the additional tabs above this page**. This will give you a better understanding of key concepts such as the Sustainable Development Goals (SDGS), B Corp Methodology, Culture Indicators & Financial Metrics used and how we calculate our Oracle Score and its subcomponents. \n\n')
-            st.markdown('Further information on calculations, datasources and our freely shared code can be found on our Github. We are working to completely automate the collection and cleaning of data consistently and will update Oracle when we hit this milestone')
+        st.subheader("Oracle Tool: Introduction")
+        st.markdown(f'###### Welcome! :wave:')
+        st.markdown('This Tool has been designed to assist Oracle in Filtering through potential corporate partners.\n\n'
+            'It contains over 6,000 companies and assesses them based on our 4 C Framework represented by the **Oracle Score** and its subcomponents the, **Culture Score**, **Capactiy Score**, **Conduct Score**, and **Collaboration Score**.')
+        st.divider()
+        st.subheader('Things to Note')
+        st.markdown('Please note that navigating between pages will reset the view while navigating between tabs will keep the filters intact. If an error occurs it is likely interaction between different sections filters. Please reset filters and try again.\n\n'
+            '**To better Understand terminology, data sources and calcultations, please refer to the additional tabs above this page**. This will give you a better understanding of key concepts such as the Sustainable Development Goals (SDGS), B Corp Methodology, Culture Indicators & Financial Metrics used and how we calculate our Oracle Score and its subcomponents. \n\n')
+        st.markdown('Further information on calculations, datasources and our freely shared code can be found on our Github. We are working to completely automate the collection and cleaning of data consistently and will update Oracle when we hit this milestone')
     with col2:
-        with st.container():
-            st.subheader('Navigation')
-            st.markdown(f'###### Where do you want to go? :wave:')
-    
-            st.markdown('The page has two main sections: **Oracle Score Dashboard** :bar_chart: :mag:, **Deep Dive on a Company** :factory::eyes:\n\n'
-                    '**Aggregate Data** :bar_chart: :mag: Consists of three embedded tabs. In this section you can filter the database based on a number of different criteria. Data will automatically update as you adjust the filter values. This section also contains a number of charts and statistics to help you understand the data distribution breaking down the Oracle Score in to its subcomponents. Further tabs allow us to look at sub-components. This page is useful for giving users a well rounded view of the universe!\n\n'
-                    
-                    '**Company Deep Dive** :factory::eyes: The page allows us to select a company from the dropdown and see a detailed overview of the company including performance on our 4Cs framework. Users can assess a Company performance across scores relative to a selected peer or the median of the universe. Lastly, users are shown a visual of company contribution to SDGs. This page is useful for understanding why a Company is rated as they are, what they might have in common with Oracle and is a launchpad to further research. \n\n'
+        st.subheader('Navigation')
+        st.markdown(f'###### Where do you want to go? :wave:')
+
+        st.markdown('The page has two main sections: **Oracle Score Dashboard** :bar_chart: :mag:, **Deep Dive on a Company** :factory::eyes:\n\n'
+                '**Aggregate Data** :bar_chart: :mag: Consists of three embedded tabs. In this section you can filter the database based on a number of different criteria. Data will automatically update as you adjust the filter values. This section also contains a number of charts and statistics to help you understand the data distribution breaking down the Oracle Score in to its subcomponents. Further tabs allow us to look at sub-components. This page is useful for giving users a well rounded view of the universe!\n\n'
                 
-                    '**To Get Started** :page_facing_up: Use the **sidebar** on the left of the page to start exploring.')
+                '**Company Deep Dive** :factory::eyes: The page allows us to select a company from the dropdown and see a detailed overview of the company including performance on our 4Cs framework. Users can assess a Company performance across scores relative to a selected peer or the median of the universe. Lastly, users are shown a visual of company contribution to SDGs. This page is useful for understanding why a Company is rated as they are, what they might have in common with Oracle and is a launchpad to further research. \n\n'
+            
+                '**To Get Started** :page_facing_up: Use the **sidebar** on the left of the page to start exploring.')
         st.divider()
 
 
