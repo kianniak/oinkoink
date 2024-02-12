@@ -45,8 +45,10 @@ def load_data(file_name):
     return df
 df = load_data('oraclecomb.csv')
 ##high level filters
-def filter_dataframe(df, company_names, regions, industries, company_sizes, oracle_range, culture_range, capacity_range, conduct_range, collaboration_range):
+def filter_dataframe(df, b_corp_filter, company_names, regions, industries, company_sizes, oracle_range, culture_range, capacity_range, conduct_range, collaboration_range):
     temp_df = df 
+    if b_corp_filter is not None:
+        temp_df = temp_df[temp_df['B Corp'] == b_corp_filter]
     if company_names:
         temp_df = temp_df[temp_df['Company'].isin(company_names)]
     if regions:
