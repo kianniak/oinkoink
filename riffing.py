@@ -11,7 +11,7 @@ import Levenshtein
 from streamlit_option_menu import option_menu
 from streamlit_server_state import server_state, server_state_lock
 import streamlit_shadcn_ui as ui
-from utils import display_columns, get_filtered_data, load_data, calculate_stats, calculate_metrics, SDG_Impact_Alignment, calculate_country_metrics, selected_score, create_radar_chart, create_strip_plot, generate_chart, create_company_selectbox, create_gauge_options, SDG_Impact_Alignment, sdg_expander, find_closest_match, plot_choropleth, plot_bar_chart, filter_dataframe
+from utils import display_columns, get_filtered_data, load_data, calculate_stats, calculate_metrics, SDG_Impact_Alignment, calculate_country_metrics, selected_score, create_radar_chart, create_strip_plot, generate_chart, create_company_selectbox, create_gauge_options, create_sdg_chart, sdg_expander, find_closest_match, plot_choropleth, plot_bar_chart, filter_dataframe
 
 st.set_page_config(page_title="Oracle Partnerships with Purpose Tool", page_icon="🔍", layout="wide", initial_sidebar_state="expanded")
 df = load_data('oraclecomb.csv')
@@ -277,7 +277,7 @@ def deepdive():
 
     st.subheader(f'SDG Revenue Alignment - {option}')
     sdg_expander()
-    SDG_Impact_Alignment()
+    SDG_Impact_Alignment(df, selected_company, show_all_data)
 
 styles = {
     "container": {"margin": "0px !important", "padding": "0!important", "align-items": "stretch", "background-color": "#fafafa"},
@@ -378,4 +378,3 @@ def show_menu(menu):
 
 show_menu(menu)
 st.write('Kian 2023. :gear: :mag: for Oracle.')
-
