@@ -7,11 +7,10 @@ import plotly.graph_objects as go
 import plotly.express as px
 from plotly.subplots import make_subplots
 from streamlit_echarts import st_echarts
-import Levenshtein
 from streamlit_option_menu import option_menu
 from streamlit_server_state import server_state, server_state_lock
 import streamlit_shadcn_ui as ui
-from utils import display_columns, get_filtered_data, load_data, calculate_stats, calculate_metrics, SDG_Impact_Alignment, calculate_country_metrics, selected_score, create_radar_chart, create_strip_plot, generate_chart, create_company_selectbox, create_gauge_options, create_sdg_chart, sdg_expander, find_closest_match, plot_choropleth, plot_bar_chart, filter_dataframe
+from utils import get_filtered_data, load_data, calculate_stats, calculate_metrics, SDG_Impact_Alignment, calculate_country_metrics, selected_score, create_radar_chart, create_strip_plot, generate_chart, create_company_selectbox, create_gauge_options, sdg_expander, find_closest_match, plot_choropleth, plot_bar_chart, filter_dataframe
 
 st.set_page_config(page_title="Oracle Partnerships with Purpose Tool", page_icon="🔍", layout="wide", initial_sidebar_state="expanded")
 df = load_data('oraclecomb.csv')
@@ -44,7 +43,7 @@ def intro_page():
 
 def aggframe(): 
     st.subheader("Oracle Score Dashboard")
-    col1, col2, = st.columns([0.05, 0.95])
+    col1, col2, = st.columns([0.08, 0.92])
     with col1:
         st.markdown('Filters -')
     with col2:
@@ -59,7 +58,7 @@ def aggframe():
     col2.metric(label="UK Companies", value=f"{stats['total_filtered_uk_companies']:,}")
     col3.metric(label="Highest Oracle Score", value="{:.2f}".format(stats['highest_oracle_score']))
     col4.metric(label="Median Oracle Score", value="{:.2f}".format(stats['median_oracle_score']))
-    col1, col2 = st.columns([0.05, 0.95])
+    col1, col2 = st.columns([0.1, 0.9])
     with col1:
         st.markdown('Filtered Table -')
     with col2:
@@ -381,3 +380,4 @@ def show_menu(menu):
 
 show_menu(menu)
 st.write('Kian 2023. :gear: :mag: for Oracle.')
+
