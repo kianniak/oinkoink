@@ -385,7 +385,7 @@ def create_radar_chart(df, scores, score_columns, selected_company, option, show
         theta=score_columns,
         fill='toself',
         name=f'{option}',
-        marker=dict(color='rgba(0, 128, 0, 0.5)')  # Green color
+        marker=dict(color='rgba(255, 0, 0, 0.5)')
     ))
     if show_median:
         median_scores = df[score_columns].median().tolist()
@@ -394,7 +394,7 @@ def create_radar_chart(df, scores, score_columns, selected_company, option, show
             theta=score_columns,
             fill='toself',
             name='Median Pillar Scores',
-            marker=dict(color='rgba(255, 0, 0, 0.5)')  # Red color
+            marker=dict(color='rgba(0, 255, 0, 0.5)')  
         ))
     if show_comparison:
         compare_scores = df[df['Company'] == selected_company][score_columns].iloc[0].tolist()
@@ -403,7 +403,7 @@ def create_radar_chart(df, scores, score_columns, selected_company, option, show
             theta=score_columns,
             fill='toself',
             name=selected_company,
-            marker=dict(color='rgba(0, 0, 255, 0.5)')  # Blue color
+            marker=dict(color='rgba(0, 0, 255, 0.5)')
         ))
     fig.update_layout(polar=dict(
         radialaxis=dict(visible=True, range=[0, 100])), showlegend=True,
@@ -512,4 +512,3 @@ def SDG_Impact_Alignment():
     st.markdown('')
     st.markdown(f"#### Plotted Revenue Alignment/Misalignment to SDGs")
     st.plotly_chart(fig)
-
