@@ -365,7 +365,7 @@ menu = {
             }
         }
     },
-    'menu_icon': 'crosshair',
+    'menu_icon': 'search',
     'default_index': 0,
     'with_view_panel': 'sidebar',
     'orientation': 'vertical',
