@@ -45,9 +45,8 @@ def intro_page():
 def aggframe(): 
     st.subheader(':sleuth_or_spy: Filters')
     st.markdown('Use the Filters Below to Dynamically Narrow the Data Universe of Companies')
-    get_filtered_data(df)
-    st.session_state['filtered_data'] = filter_dataframe(df, b_corp_filter, selected_companies, selected_regions, selected_industries, selected_size, selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration)
-
+    filtered_data = get_filtered_data(df)
+    st.session_state['filtered_data'] = filtered_data
     score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score']
     selected_score = st.selectbox('Click To Select Score Category', score_columns)
     stats = calculate_stats(df, filtered_data, selected_score)
