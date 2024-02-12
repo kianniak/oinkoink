@@ -46,7 +46,7 @@ def aggframe():
     st.subheader("Oracle Score Dashboard")
     col1, col2, = st.columns([0.1, 0.9])
     with col1:
-        st.markdown('Filters')
+        st.markdown('Filters -')
     with col2:
         st.caption('Use the Filters Below to Dynamically Narrow the Data Universe of Companies')
     filtered_data = get_filtered_data(df)
@@ -59,11 +59,11 @@ def aggframe():
     col2.metric(label="UK Companies", value=f"{stats['total_filtered_uk_companies']:,}")
     col3.metric(label="Highest Oracle Score", value="{:.2f}".format(stats['highest_oracle_score']))
     col4.metric(label="Median Oracle Score", value="{:.2f}".format(stats['median_oracle_score']))
-    col1, col2 = st.columns([0.1, 0.9])
+    col1, col2 = st.columns([0.15, 0.85])
     with col1:
-        st.markdown('Filtered Table')
+        st.markdown('Filtered Table -')
     with col2:
-        st.caption('This table will dynamically update based where you set the sidebar filters. At startup it will show all companies in our analysis')
+        st.caption('dynamically updated based on where filters set. At startup it will show all companies in our analysis')
     filtered_df = filtered_data.sort_values(by='Oracle Score', ascending=False)
     st.data_editor(filtered_df, use_container_width=True, hide_index=True)
     csv = filtered_df.to_csv(index=False)
@@ -81,7 +81,6 @@ def analysis1():
     stats = calculate_stats(df, filtered_data, selected_score)
     st.markdown(f'Top 5 Companies for {selected_score}')
     st.caption(f'These are the Top 5 Companies on the {selected_score}. The arrow shows the distance from the median score value.')
-    st.caption('Note: Sub-Components are Normalized between 0 and 100. The Oracle Score is a weighted average of these Normalized Scores. This is to enable comparision among disparate but methodologically similar calculations between datasets')
     filtered_data = st.session_state['filtered_data']
     top_5_companies = filtered_data.nlargest(5, selected_score)
     cols = st.columns(5) 
@@ -113,7 +112,7 @@ def analysis1():
     st.plotly_chart(swarm_plot)
     st.divider()
     st.subheader(f"{selected_score} and Components by Industry")
-    calculate_metrics(df, selected_score)
+    metrics = calculate_metrics(filtered_data, selected_score)
     col1, col2, col3, col4 = st.columns(4)
     with col1:
         st.text('Highest Industry (by median):')
