@@ -279,9 +279,9 @@ def deepdive():
 
 styles = {
     "container": {"margin": "0px !important", "padding": "0!important", "align-items": "stretch", "background-color": "#fafafa"},
-    "icon": {"color": "black", "font-size": "16px"}, 
+    "icon": {"color": "black", "font-size": "14px"}, 
     "nav-link": {"font-size": "14px", "text-align": "left", "margin":"0px", "--hover-color": "#eee"},
-    "nav-link-selected": {"background-color": "lightblue", "font-size": "16px", "font-weight": "normal", "color": "black", },
+    "nav-link-selected": {"background-color": "lightblue", "font-size": "14px", "font-weight": "normal", "color": "black", },
 }
 
 st.subheader('Oracle Partnerships with Purpose Tool')
@@ -319,10 +319,10 @@ menu = {
             }
         },
         'Company Deep Dive' : {
-            'action': None, 'item_icon': 'gear', 'submenu': {
+            'action': None, 'item_icon': 'crosshair', 'submenu': {
                 'title': None,
                 'items': { 
-                    'company Deep Dive' : {'action': deepdive, 'item_icon': 'radar', 'submenu': None},
+                    'Company Deep Dive' : {'action': deepdive, 'item_icon': 'radar', 'submenu': None},
                     'SDG & Impact Alignment' : {'action': "", 'item_icon': 'rainbow', 'submenu': None},
                 },
                 'menu_icon': 'crosshair',
@@ -376,4 +376,3 @@ def show_menu(menu):
 
 show_menu(menu)
 st.write('Kian 2023. :gear: :mag: for Oracle.')
-
