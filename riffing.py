@@ -407,4 +407,4 @@ def show_menu(menu):
         menu['items'][menu_selection]['action']()
 
 show_menu(menu)
-st.write('Kian 2023. :gear: :mag: for Oracle.')
+st.write('Kian 2024. :gear: :mag: for Oracle.')
