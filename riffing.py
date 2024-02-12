@@ -324,7 +324,7 @@ menu = {
             'action': None, 'item_icon': 'house', 'submenu': {
                 'title': None,
                 'items': { 
-                    'Introduction' : {'action': intro_page, 'item_icon': 'journal_richtext', 'submenu': None},
+                    'Introduction' : {'action': intro_page, 'item_icon': 'journal-richtext', 'submenu': None},
                     '3rd Party Data Used' : {'action': sdg_expander, 'item_icon': 'database-dash', 'submenu': None},
                     'Proprietary Data Logic' : {'action': "", 'item_icon': 'database-check', 'submenu': None},
                 },
@@ -339,7 +339,7 @@ menu = {
             'action': None, 'item_icon': 'tablet-landscape', 'submenu': {
                 'title': None,
                 'items': { 
-                    'Aggregate Filter' : {'action': aggframe, 'item_icon': 'filter', 'submenu': None},
+                    'Aggregate Filter' : {'action': aggframe, 'item_icon': 'funnel', 'submenu': None},
                     'Analysis Tab 1' : {'action': analysis1, 'item_icon': 'file-earmark-check', 'submenu': None},
                     'Analysis Tab 2' : {'action': lambda: analysis2(df), 'item_icon': 'file-earmark-plus', 'submenu': None},
                 },
