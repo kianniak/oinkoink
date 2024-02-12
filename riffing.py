@@ -1,4 +1,4 @@
-#utils
+#riff
 import pandas as pd
 import numpy as np
 import streamlit as st
@@ -48,7 +48,6 @@ def aggframe():
     filtered_data = get_filtered_data(df)
     st.session_state['filtered_data'] = filtered_data
     score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score']
-    selected_score = st.selectbox('Click To Select Score Category', score_columns)
     stats = calculate_stats(df, filtered_data, selected_score)
     
     st.subheader("Oracle Score Dashboard")
@@ -63,7 +62,7 @@ def aggframe():
     st.subheader('Filtered Table')
     st.caption('This table will dynamically update based where you set the sidebar filters. At startup it will show all companies in our analysis')
     filtered_df = filtered_data.sort_values(by='Oracle Score', ascending=False)
-    st.dataframe(filtered_df, use_container_width=True, hide_index=True)
+    st.data_editor(filtered_df, use_container_width=True, hide_index=True)
     csv = filtered_df.to_csv(index=False)
     st.download_button(
         label="Download Filtered data as CSV",
@@ -281,23 +280,23 @@ def deepdive():
 styles = {
     "container": {"margin": "0px !important", "padding": "0!important", "align-items": "stretch", "background-color": "#fafafa"},
     "icon": {"color": "black", "font-size": "16px"}, 
-    "nav-link": {"font-size": "16px", "text-align": "left", "margin":"0px", "--hover-color": "#eee"},
+    "nav-link": {"font-size": "14px", "text-align": "left", "margin":"0px", "--hover-color": "#eee"},
     "nav-link-selected": {"background-color": "lightblue", "font-size": "16px", "font-weight": "normal", "color": "black", },
 }
 
 st.subheader('Oracle Partnerships with Purpose Tool')
 menu = {
-    'title': 'Navigation Menu',
+    'title': 'Navigation',
     'items': { 
         'Introduction & Instructions' : {
             'action': None, 'item_icon': 'house', 'submenu': {
                 'title': None,
                 'items': { 
                     'Introduction' : {'action': intro_page, 'item_icon': 'list-task', 'submenu': None},
-                    '3rd Party Data Used' : {'action': sdg_expander, 'item_icon': 'list-check', 'submenu': None},
-                    'Proprietary Data Logic' : {'action': "", 'item_icon': 'cloud-upload-fill', 'submenu': None},
+                    '3rd Party Data Used' : {'action': sdg_expander, 'item_icon': 'database-dash', 'submenu': None},
+                    'Proprietary Data Logic' : {'action': "", 'item_icon': 'database-check', 'submenu': None},
                 },
-                'menu_icon': 'sleuth_or_spy',
+                'menu_icon': 'filter-circle',
                 'default_index': 0,
                 'with_view_panel': 'main',
                 'orientation': 'horizontal',
@@ -305,14 +304,14 @@ menu = {
             }
         },
         'Filter Aggregate Data' : {
-            'action': None, 'item_icon': 'gear', 'submenu': {
+            'action': None, 'item_icon': 'option', 'submenu': {
                 'title': None,
                 'items': { 
-                    'Aggregate Dataframe' : {'action': aggframe, 'item_icon': 'key', 'submenu': None},
-                    'Analysis Tab 1' : {'action': analysis1, 'item_icon': 'journals', 'submenu': None},
-                    'Analysis Tab 2' : {'action': analysis2, 'item_icon': 'journals', 'submenu': None},
+                    'Aggregate Dataframe' : {'action': aggframe, 'table-landscape': 'key', 'submenu': None},
+                    'Analysis Tab 1' : {'action': analysis1, 'item_icon': 'file-earmark-check', 'submenu': None},
+                    'Analysis Tab 2' : {'action': analysis2, 'item_icon': 'file-earmark-plus', 'submenu': None},
                 },
-                'menu_icon': None,
+                'menu_icon': 'postcard',
                 'default_index': 0,
                 'with_view_panel': 'main',
                 'orientation': 'horizontal',
@@ -323,10 +322,10 @@ menu = {
             'action': None, 'item_icon': 'gear', 'submenu': {
                 'title': None,
                 'items': { 
-                    'company Deep Dive' : {'action': deepdive, 'item_icon': 'key', 'submenu': None},
-                    'SDG & Impact Alignment' : {'action': "", 'item_icon': 'journals', 'submenu': None},
+                    'company Deep Dive' : {'action': deepdive, 'item_icon': 'radar', 'submenu': None},
+                    'SDG & Impact Alignment' : {'action': "", 'item_icon': 'rainbow', 'submenu': None},
                 },
-                'menu_icon': 'sleuth_or_spy',
+                'menu_icon': 'crosshair',
                 'default_index': 0,
                 'with_view_panel': 'main',
                 'orientation': 'horizontal',
@@ -334,7 +333,7 @@ menu = {
             }
         }
     },
-    'menu_icon': 'sleuth_or_spy',
+    'menu_icon': 'segmented-nav',
     'default_index': 0,
     'with_view_panel': 'sidebar',
     'orientation': 'vertical',
@@ -377,3 +376,4 @@ def show_menu(menu):
 
 show_menu(menu)
 st.write('Kian 2023. :gear: :mag: for Oracle.')
+
