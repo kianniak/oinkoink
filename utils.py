@@ -67,35 +67,33 @@ def filter_dataframe(df, company_names, regions, industries, company_sizes, orac
         temp_df = temp_df[(temp_df['Collaboration Score'] >= collaboration_range[0]) & (temp_df['Collaboration Score'] <= collaboration_range[1])]
     return temp_df
 
-def get_b_corp_filter(df):
+def get_filtered_data(df):
+    # B Corp filter
     with st.sidebar:
         is_b_corp = st.checkbox('Only Display Designated B Corps', value=False)
-        return 'Yes' if is_b_corp else None    
-                
-    def get_comp_filtered_data(df):
+        b_corp_filter = 'Yes' if is_b_corp else None
+
+    # Company and score filters
+    col1, col2 = st.columns(2, gap="small")
+    with col1:
         with st.expander('Company Trait Filters'):
             selected_companies = st.multiselect('Select by Company Name', options=df['Company'].unique(), key='company_name')
             selected_regions = st.multiselect('Select by Region', options=df['Region'].unique(), key='region')
             selected_industries = st.multiselect('Select by Industry', options=df['Industry'].unique(), key='industry')
             selected_size = st.multiselect('Select by Company Size', options=df['Company Size'].unique(), key='company_size')
-        return selected_companies, selected_regions, selected_industries, selected_size
-
-    def get_score_filtered_data(df):
+    with col2:
         with st.expander('Company Score Filters'):
             selected_oracle = st.slider('Oracle Score', min_value=0, max_value=100, value=(0, 100))
             selected_culture = st.slider('Culture Score', min_value=0, max_value=100, value=(0, 100))
             selected_capacity = st.slider('Capacity Score', min_value=0, max_value=100, value=(0, 100))
             selected_conduct = st.slider('Conduct Score', min_value=0, max_value=100, value=(0, 100))
             selected_collaboration = st.slider('Collaboration Score', min_value=0, max_value=100, value=(0, 100))
-        return selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration
 
-    col1, col2 = st.columns(2, gap="small")
-    with col1:
-        selected_companies, selected_regions, selected_industries, selected_size = get_comp_filtered_data(df)
-    with col2:
-        selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration = get_score_filtered_data(df)
+    # Filter dataframe
+    filtered_data = filter_dataframe(df, b_corp_filter, selected_companies, selected_regions, selected_industries, selected_size, selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration)
 
-    filtered_data = filter_dataframe(df, selected_companies, selected_regions, selected_industries, selected_size, selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration)
+    return filtered_data
+filtered_data = get_filtered_data(df)
 ###Score Checking
 company_data  = None
 score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score'] 
@@ -316,7 +314,7 @@ def create_gauge_chart(score, title):
         gauge={
             'axis': {'range': [None, 100], 'tickwidth': 1},
             'bar': {'color': "darkblue"}}))
-    fig.update_layout()
+    fig.update_layout(width=400, height=400)
     return fig
 def create_gauge_options(score, median_oracle_score, title):
         options = {
@@ -375,7 +373,44 @@ def create_gauge_options(score, median_oracle_score, title):
             }]
         }
         return options
-
+##create radar chart
+def create_radar_chart(df, scores, score_columns, selected_company, option, show_median=False, show_comparison=False):
+    radar_data = pd.DataFrame(dict(Score=scores, Dimension=score_columns))
+    radar_data['angle'] = radar_data['Score'] / radar_data['Score'].sum() * 2 * math.pi
+    fig = go.Figure()
+    fig.add_trace(go.Scatterpolar(
+        r=scores,
+        theta=score_columns,
+        fill='toself',
+        name=f'{option}',
+        marker=dict(color='rgba(0, 128, 0, 0.5)')  # Green color
+    ))
+    if show_median:
+        median_scores = df[score_columns].median().tolist()
+        fig.add_trace(go.Scatterpolar(
+            r=median_scores,
+            theta=score_columns,
+            fill='toself',
+            name='Median Pillar Scores',
+            marker=dict(color='rgba(255, 0, 0, 0.5)')  # Red color
+        ))
+    if show_comparison:
+        compare_scores = df[df['Company'] == selected_company][score_columns].iloc[0].tolist()
+        fig.add_trace(go.Scatterpolar(
+            r=compare_scores,
+            theta=score_columns,
+            fill='toself',
+            name=selected_company,
+            marker=dict(color='rgba(0, 0, 255, 0.5)')  # Blue color
+        ))
+    fig.update_layout(polar=dict(
+        radialaxis=dict(visible=True, range=[0, 100])), showlegend=True,
+        legend=dict(
+            yanchor="top",
+            y=0.5,
+            xanchor="left",
+            x=0))
+    return fig
 ##function for Text on SDG_Expander
 def sdg_expander():
     with st.expander('Click To Expand For More Information on Complete SDG Definitions and Revenue Alignment Methodology :world_map:'):
@@ -461,4 +496,18 @@ def create_sdg_chart(df, show_all_data):
             fig.update_yaxes(tickvals=sdg_labels, ticktext=sdg_labels, autorange="reversed", row=1, col=1)
             fig.update_yaxes(tickvals=sdg_labels, ticktext=sdg_labels, autorange="reversed", row=1, col=2)
     return fig, largest_aligned_sdg, largest_aligned_value, largest_misaligned_sdg, largest_misaligned_value
+def SDG_Impact_Alignment():
+    option = selected_company
+    show_all_data = st.toggle("Show All Data", value=True)
+    fig, largest_aligned_sdg, largest_aligned_value, largest_misaligned_sdg, largest_misaligned_value = create_sdg_chart(company_data, show_all_data)
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        st.markdown("Largest SDG Detraction")
+        st.markdown(f"###### {largest_misaligned_sdg if largest_misaligned_sdg else 'None'}   {largest_misaligned_value:.0%}")
+    with col2:
+        st.markdown("Largest SDG Contribution")
+        st.markdown(f"###### {largest_aligned_sdg if largest_aligned_sdg else 'None'} - {largest_aligned_value:.0%}")
+    st.markdown('')
+    st.markdown(f"#### Plotted Revenue Alignment/Misalignment to SDGs")
+    st.plotly_chart(fig)
 
