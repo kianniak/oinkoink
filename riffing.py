@@ -113,7 +113,7 @@ def analysis1():
     st.plotly_chart(swarm_plot)
     st.divider()
     st.subheader(f"{selected_score} and Components by Industry")
-    calculate_metrics(df, filtered_data, selected_score)
+    calculate_metrics(df, selected_score)
     col1, col2, col3, col4 = st.columns(4)
     with col1:
         st.text('Highest Industry (by median):')
@@ -278,7 +278,7 @@ def deepdive():
 
     st.subheader(f'SDG Revenue Alignment - {option}')
     sdg_expander()
-    SDG_Impact_Alignment(df, selected_company, show_all_data)
+    SDG_Impact_Alignment(df, selected_company)
 
 styles = {
     "container": {"margin": "0px !important", "padding": "0!important", "align-items": "stretch", "background-color": "#fafafa"},
