@@ -12,7 +12,6 @@ from streamlit_server_state import server_state, server_state_lock
 import streamlit_shadcn_ui as ui
 from utils import get_filtered_data, load_data, calculate_stats, calculate_metrics, SDG_Impact_Alignment, calculate_country_metrics, selected_score, create_radar_chart, create_strip_plot, generate_chart, create_company_selectbox, create_gauge_options, sdg_expander, find_closest_match, plot_choropleth, plot_bar_chart, filter_dataframe
 
-st.set_page_config(page_title="Oracle Partnerships with Purpose Tool", page_icon="🔍", layout="wide", initial_sidebar_state="expanded")
 df = load_data('oraclecomb.csv')
 
 ##function for IntroPage Text Wall
@@ -45,9 +44,9 @@ def aggframe():
     st.subheader("Oracle Score Dashboard")
     col1, col2, = st.columns([0.08, 0.92])
     with col1:
-        st.markdown('Filters -')
+        st.markdown('Filters')
     with col2:
-        st.caption('Use the Filters Below to Dynamically Narrow the Data Universe of Companies')
+        st.markdown('Use the Filters Below to Dynamically Narrow the Data Universe of Companies')
     filtered_data = get_filtered_data(df)
     st.session_state['filtered_data'] = filtered_data
     stats = calculate_stats(df, filtered_data, selected_score)
@@ -60,9 +59,9 @@ def aggframe():
     col4.metric(label="Median Oracle Score", value="{:.2f}".format(stats['median_oracle_score']))
     col1, col2 = st.columns([0.1, 0.9])
     with col1:
-        st.markdown('Filtered Table -')
+        st.markdown('Table -')
     with col2:
-        st.caption('Dynamically updated based on where filters set. At startup it will show all companies in our analysis')
+        st.markdown('Dynamically updated based on where filters set.')
     filtered_df = filtered_data.sort_values(by='Oracle Score', ascending=False)
     st.data_editor(filtered_df, use_container_width=True, hide_index=True)
     csv = filtered_df.to_csv(index=False)
@@ -112,7 +111,6 @@ def analysis1():
     st.divider()
     st.subheader(f"{selected_score} and Components by Industry")
     metrics = calculate_metrics(filtered_data, selected_score)
-    industry_median_scores, highest_industry, highest_company, lowest_industry, lowest_company = metrics
     col1, col2, col3, col4 = st.columns(4)
     with col1:
         st.text('Highest Industry (by median):')
@@ -139,7 +137,6 @@ def analysis2(df):
     col1, col2 = st.columns([1.7,1])
     with col1:
         selected_country='United Kingdom'
-        country_metrics = calculate_country_metrics(filtered_data, selected_country)
         generate_chart(filtered_data, stats, selected_score, "region")
     st.divider()
     with col2:
@@ -176,15 +173,7 @@ def deepdive():
         company_data = df[df['Company'] == option]
     if option:
         filtered_df2 = df[df['Company'] == option]
-        selected_geography = filtered_df2['Region'].values[0]
-        selected_industry = filtered_df2['Industry'].values[0]
-        selected_culture = filtered_df2['Culture Score'].values[0]
-        selected_cap = filtered_df2['Capacity Score'].values[0]
-        selected_cond = filtered_df2['Conduct Score'].values[0]
-        selected_collab = filtered_df2['Collaboration Score'].values[0]
-        selected_rank_range =  filtered_df2['Oracle Score'].values[0]
         median_oracle_score = df['Oracle Score'].median()
-        percentile_rank = (df[df['Oracle Score'] < selected_rank_range]['Oracle Score'].count() + 1) / df.shape[0] * 100
     st.divider()
     st.subheader(f'Company Overview - {option}')
     website = company_data['Website'].iloc[0]
@@ -203,8 +192,6 @@ def deepdive():
         capacity_delta = float(company_data['Capacity Score'].iloc[0]) - df['Capacity Score'].median()
         conduct_delta = float(company_data['Conduct Score'].iloc[0]) - df['Conduct Score'].median()
         collaboration_delta = float(company_data['Collaboration Score'].iloc[0]) - df['Collaboration Score'].median()
-        oracle_delta =  float(company_data['Oracle Score'].iloc[0]) - df['Oracle Score'].median()
-        oracle_delta = float(company_data['Oracle Score'].iloc[0]) - median_oracle_score
         st.metric("Culture Score", "{:.2f}".format(company_data['Culture Score'].iloc[0]), "{:.2f}".format(culture_delta))
         st.markdown("")
         st.markdown("")
@@ -252,7 +239,6 @@ def deepdive():
         st.markdown('This chart shows the company\'s scores across each Component of the Oracle Score.\n\n'
         'Users can add any company from the database as an overlay to compare scores.\n\n'
         'Additionally, users can toggle the median scores to see how the company compares to the median of the universe.')
-        median_scores = df[score_columns].median().tolist()
         scores = company_data[score_columns].iloc[0].tolist()
         selected_company = create_company_selectbox(df, 'Comparator')
         with st.expander('Click To Expand For More Information About Radar Charts'):
@@ -303,7 +289,7 @@ menu = {
                 'menu_icon': 'filter-circle',
                 'default_index': 0,
                 'with_view_panel': 'main',
-                'orientation': 'vertical',
+                'orientation': 'horizontal',
                 'styles': styles
             }
         },
@@ -339,8 +325,8 @@ menu = {
     },
     'menu_icon': 'option',
     'default_index': 0,
-    'with_view_panel': 'main',
-    'orientation': 'horizontal',
+    'with_view_panel': 'sidebar',
+    'orientation': 'vertical',
     'styles': styles
 }
 
@@ -380,4 +366,3 @@ def show_menu(menu):
 
 show_menu(menu)
 st.write('Kian 2023. :gear: :mag: for Oracle.')
-
