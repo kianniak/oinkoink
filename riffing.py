@@ -44,7 +44,7 @@ def intro_page():
 
 def aggframe(): 
     st.subheader("Oracle Score Dashboard")
-    col1, col2, = st.columns([0.1, 0.9])
+    col1, col2, = st.columns([0.05, 0.95])
     with col1:
         st.markdown('Filters -')
     with col2:
@@ -59,11 +59,11 @@ def aggframe():
     col2.metric(label="UK Companies", value=f"{stats['total_filtered_uk_companies']:,}")
     col3.metric(label="Highest Oracle Score", value="{:.2f}".format(stats['highest_oracle_score']))
     col4.metric(label="Median Oracle Score", value="{:.2f}".format(stats['median_oracle_score']))
-    col1, col2 = st.columns([0.15, 0.85])
+    col1, col2 = st.columns([0.05, 0.95])
     with col1:
         st.markdown('Filtered Table -')
     with col2:
-        st.caption('dynamically updated based on where filters set. At startup it will show all companies in our analysis')
+        st.caption('Dynamically updated based on where filters set. At startup it will show all companies in our analysis')
     filtered_df = filtered_data.sort_values(by='Oracle Score', ascending=False)
     st.data_editor(filtered_df, use_container_width=True, hide_index=True)
     csv = filtered_df.to_csv(index=False)
@@ -132,13 +132,14 @@ def analysis1():
     generate_chart(df, stats, selected_score, "industry")
 def analysis2(df):
     filtered_data = st.session_state['filtered_data']
+    filtered_data2 = df.groupby('Country').filter(lambda x: len(x) > 20)
     st.subheader('Geographical and Company Size Distribution')
     score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score']
     selected_score = st.selectbox('Click To Select Score for Statistics on Metrics', score_columns)
     stats = calculate_stats(df, filtered_data, selected_score)
     col1, col2 = st.columns([1.7,1])
     with col1:
-        country_metrics = calculate_country_metrics(filtered_data)
+        country_metrics = calculate_country_metrics(filtered_data, selected_country)
         generate_chart(filtered_data, stats, selected_score, "region")
     st.divider()
     with col2:
@@ -379,4 +380,3 @@ def show_menu(menu):
 
 show_menu(menu)
 st.write('Kian 2023. :gear: :mag: for Oracle.')
-
