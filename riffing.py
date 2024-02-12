@@ -11,7 +11,7 @@ import Levenshtein
 from streamlit_option_menu import option_menu
 from streamlit_server_state import server_state, server_state_lock
 import streamlit_shadcn_ui as ui
-from utils import display_columns, get_filtered_data, load_data, calculate_stats, calculate_metrics, calculate_country_metrics, selected_score, create_strip_plot, generate_chart, create_company_selectbox, create_gauge_options, create_sdg_chart, sdg_expander, find_closest_match, plot_choropleth, plot_bar_chart, filter_dataframe
+from utils import display_columns, get_filtered_data, load_data, calculate_stats, calculate_metrics, calculate_country_metrics, selected_score, create_radar_chart create_strip_plot, generate_chart, create_company_selectbox, create_gauge_options, create_sdg_chart, sdg_expander, find_closest_match, plot_choropleth, plot_bar_chart, filter_dataframe
 
 st.set_page_config(page_title="Oracle Partnerships with Purpose Tool", page_icon="🔍", layout="wide", initial_sidebar_state="expanded")
 df = load_data('oraclecomb.csv')
@@ -44,8 +44,11 @@ def intro_page():
 
 def aggframe(): 
     st.subheader("Oracle Score Dashboard")
-    st.markdown(':sleuth_or_spy: Filters')
-    st.caption('Use the Filters Below to Dynamically Narrow the Data Universe of Companies')
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.markdown('Filters')
+    with col2:
+        st.caption('Use the Filters Below to Dynamically Narrow the Data Universe of Companies')
     filtered_data = get_filtered_data(df)
     st.session_state['filtered_data'] = filtered_data
     stats = calculate_stats(df, filtered_data, selected_score)
@@ -56,8 +59,11 @@ def aggframe():
     col2.metric(label="UK Companies", value=f"{stats['total_filtered_uk_companies']:,}")
     col3.metric(label="Highest Oracle Score", value="{:.2f}".format(stats['highest_oracle_score']))
     col4.metric(label="Median Oracle Score", value="{:.2f}".format(stats['median_oracle_score']))
-    st.markdown('Filtered Table')
-    st.caption('This table will dynamically update based where you set the sidebar filters. At startup it will show all companies in our analysis')
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown('Filtered Table')
+    with col2:
+        st.caption('This table will dynamically update based where you set the sidebar filters. At startup it will show all companies in our analysis')
     filtered_df = filtered_data.sort_values(by='Oracle Score', ascending=False)
     st.data_editor(filtered_df, use_container_width=True, hide_index=True)
     csv = filtered_df.to_csv(index=False)
@@ -89,7 +95,6 @@ def analysis1():
     st.divider()
     st.markdown(f'Mean, Median and Highest Score on {selected_score}')
     metrics = df[selected_score].describe()
-    industry_median_scores, highest_industry, highest_company, lowest_industry, lowest_company = calculate_metrics(df, selected_score)
     col1, col2, col3= st.columns(3)
     with col1:
         st.metric(label="Median", value=f"{metrics['50%']:.2f}", delta ="None", delta_color="off")
@@ -107,7 +112,6 @@ def analysis1():
     swarm_plot = create_strip_plot(filtered_data, selected_score)
     st.plotly_chart(swarm_plot)
     st.divider()
-    industry_median_scores, highest_industry, highest_company, lowest_industry, lowest_company = calculate_metrics(df, selected_score)
     st.subheader(f"{selected_score} and Components by Industry")
     col1, col2, col3, col4 = st.columns(4)
     with col1:
