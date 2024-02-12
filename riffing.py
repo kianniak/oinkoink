@@ -1,4 +1,4 @@
-#riff
+riff
 import pandas as pd
 import numpy as np
 import streamlit as st
@@ -111,6 +111,7 @@ def analysis1():
     st.divider()
     st.subheader(f"{selected_score} and Components by Industry")
     metrics = calculate_metrics(filtered_data, selected_score)
+    industry_median_scores, highest_industry, highest_company, lowest_industry, lowest_company = metrics
     col1, col2, col3, col4 = st.columns(4)
     with col1:
         st.text('Highest Industry (by median):')
@@ -127,6 +128,44 @@ def analysis1():
     st.markdown(f'This chart shows the Average Scores across Industries for {selected_score}.  Each industry type is colour coded. Filters on the Side Allow us to Isolate Specific Additional Characteristics')          
     stats = calculate_stats(df, filtered_data, selected_score)
     generate_chart(df, stats, selected_score, "industry")
+def analysis2(df):
+    filtered_data = st.session_state['filtered_data']
+    filtered_data2 = df.groupby('Country').filter(lambda x: len(x) > 20)
+    st.subheader('Geographical and Company Size Distribution')
+    score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score']
+    selected_score = st.selectbox('Click To Select Score for Statistics on Metrics', score_columns)
+    stats = calculate_stats(df, filtered_data, selected_score)
+    col1, col2 = st.columns([1.7,1])
+    with col1:
+        selected_country='United Kingdom'
+        country_metrics = calculate_country_metrics(filtered_data, selected_country)
+        generate_chart(filtered_data, stats, selected_score, "region")
+    st.divider()
+    with col2:
+        generate_chart(df, filtered_data, selected_score, "size")
+    df_gapminder = px.data.gapminder()
+    recognized_countries = df_gapminder['country'].unique()
+    df['Mapped Country'] = df['Country'].apply(lambda country: find_closest_match(country, recognized_countries))
+    df['Country'] = df['Mapped Country']            
+    country_counts = filtered_data2['Country'].value_counts().reset_index()
+    country_counts.columns = ['Country', 'count']
+    df = filtered_data2.groupby('Country').filter(lambda x: len(x) > 20)
+    st.subheader('Oracle Score Coverage: Regional Concentrations')
+    col1, col2, col3, col4 = st.columns(4)
+    country_metrics_data = calculate_stats(df, filtered_data2, selected_score)
+    with col1:
+        st.metric(label="Home Market Companies Rated", value=f"UK - {country_metrics_data['total_uk_companies']:,}")
+    with col2:
+        st.metric(label="Region With Most Companies Rated", value=f"{country_metrics_data['most_companies_country']} - {country_metrics_data['most_companies_count']:,}")
+    with col3:
+        st.metric(label="Home Market Average Oracle Score", value=f"UK - {country_metrics_data['uk_avg_score']:.2f}")
+    with col4:
+        st.metric(label="Highest Average Oracle Score (n > 20)", value=f"{country_metrics_data['highest_avg_score_country']} - {country_metrics_data['highest_avg_score_value']:.2f}")
+    col5, col6 = st.columns(2)
+    with col5:
+        st.plotly_chart(plot_choropleth(country_counts))
+    with col6:
+        st.plotly_chart(plot_bar_chart(country_metrics_data['region_country_counts']), theme='streamlit')
 def analysis2(df):
     filtered_data = st.session_state['filtered_data']
     filtered_data2 = df.groupby('Country').filter(lambda x: len(x) > 20)
