@@ -168,12 +168,12 @@ def generate_chart(df, stats, selected_score, chart_type):
         data_key = 'average_scores_region'
         category = 'Region'
         overall_average_key = 'overall_average_region'
-        chart_width = 500
+        chart_width = 700
     elif chart_type == 'industry':
         data_key = 'average_scores_industry'
         category = 'Industry'
         overall_average_key = 'overall_average_industry'
-        chart_width = 1250
+        chart_width = 1100
     else:
         raise ValueError("Invalid chart type. Choose from 'size', 'region', or 'industry'.")
 
@@ -200,7 +200,7 @@ def create_strip_plot(filtered_data, selected_score):
     xaxis_title=selected_score,
     yaxis_title='Count',
     autosize=False,
-    width=1250,  
+    width=1100,  
     height=600, 
     title_font=dict(size=20),  
     xaxis_tickfont=dict(size=14),  
@@ -295,14 +295,14 @@ def plot_choropleth(country_counts):
                           bgcolor="white",
                           font_size=14,
                           font_family="Arial"
-                      ))
+                      ),
+                      width=550)
     return fig
 
-#region chart
 def plot_bar_chart(region_country_counts):
     fig = px.bar(region_country_counts, x='Region', y=region_country_counts.columns[1:], title='Number of Companies per Region',
                  labels={'Region': 'Region', 'value': 'Count', 'variable': 'Country'})
-    fig.update_layout(xaxis_title='', yaxis_title='', showlegend=False)
+    fig.update_layout(xaxis_title='', yaxis_title='', showlegend=False, width=500)
     return fig
 
 ##guage and guage options chart creation###
@@ -514,3 +514,4 @@ def SDG_Impact_Alignment(df, selected_company):
     st.markdown('')
     st.markdown(f"#### Plotted Revenue Alignment/Misalignment to SDGs")
     st.plotly_chart(fig)
+
