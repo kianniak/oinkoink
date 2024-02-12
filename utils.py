@@ -12,7 +12,6 @@ from streamlit_option_menu import option_menu
 from streamlit_server_state import server_state, server_state_lock
 import streamlit_shadcn_ui as ui
 
-st.set_page_config(page_title="Oracle Partnerships with Purpose Tool", page_icon="🔍", layout="wide", initial_sidebar_state="expanded")
 display_columns = ['Company', 'Country', 'Industry', 'Region',
             'Company Size', 'Employees (Estimate)','Public Or Private', 
             'Oracle Score', 'Culture Score', 
