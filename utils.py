@@ -183,7 +183,7 @@ def generate_chart(df, stats, selected_score, chart_type):
     overall_average = stats[selected_score][overall_average_key]
     fig.add_hline(y=overall_average, line_dash="dot", annotation_text="Avg", 
                   annotation_position="top right" if chart_type != 'industry' else "bottom right")
-    fig.update_layout(xaxis_title='', yaxis_title='', legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1))
+    fig.update_layout(xaxis_title='', yaxis_title='', showlegend=False)    
     st.plotly_chart(fig)
 ##swarm chart
 ##Create swarm chart
@@ -302,6 +302,7 @@ def plot_choropleth(country_counts):
 def plot_bar_chart(region_country_counts):
     fig = px.bar(region_country_counts, x='Region', y=region_country_counts.columns[1:], title='Number of Companies per Region',
                  labels={'Region': 'Region', 'value': 'Count', 'variable': 'Country'})
+    fig.update_layout(xaxis_title='', yaxis_title='', showlegend=False)
     return fig
 
 ##guage and guage options chart creation###
@@ -314,7 +315,7 @@ def create_gauge_chart(score, title):
         gauge={
             'axis': {'range': [None, 100], 'tickwidth': 1},
             'bar': {'color': "darkblue"}}))
-    fig.update_layout(width=400, height=400)
+    fig.update_layout(width=300, height=300)
     return fig
 def create_gauge_options(score, median_oracle_score, title):
         options = {
@@ -496,7 +497,8 @@ def create_sdg_chart(df, show_all_data):
             fig.update_yaxes(tickvals=sdg_labels, ticktext=sdg_labels, autorange="reversed", row=1, col=1)
             fig.update_yaxes(tickvals=sdg_labels, ticktext=sdg_labels, autorange="reversed", row=1, col=2)
     return fig, largest_aligned_sdg, largest_aligned_value, largest_misaligned_sdg, largest_misaligned_value
-def SDG_Impact_Alignment(df, selected_company, show_all_data):
+def SDG_Impact_Alignment(df, selected_company):
+    company_data = df[df['Company'] == selected_company]
     show_all_data = st.toggle("Show All Data", value=True)
     fig, largest_aligned_sdg, largest_aligned_value, largest_misaligned_sdg, largest_misaligned_value = create_sdg_chart(company_data, show_all_data)
     col1, col2 = st.columns([1, 1])
