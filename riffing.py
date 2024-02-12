@@ -44,7 +44,7 @@ def intro_page():
 
 def aggframe(): 
     st.subheader("Oracle Score Dashboard")
-    col1, col2, = st.columns([0.2, 0.8])
+    col1, col2, = st.columns([0.1, 0.9])
     with col1:
         st.markdown('Filters')
     with col2:
@@ -59,7 +59,7 @@ def aggframe():
     col2.metric(label="UK Companies", value=f"{stats['total_filtered_uk_companies']:,}")
     col3.metric(label="Highest Oracle Score", value="{:.2f}".format(stats['highest_oracle_score']))
     col4.metric(label="Median Oracle Score", value="{:.2f}".format(stats['median_oracle_score']))
-    col1, col2 = st.columns([0.2, 0.8])
+    col1, col2 = st.columns([0.1, 0.9])
     with col1:
         st.markdown('Filtered Table')
     with col2:
