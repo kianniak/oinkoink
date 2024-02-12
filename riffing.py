@@ -346,7 +346,7 @@ def show_menu(menu):
         return options
 
     def _get_icons(menu):
-        icons = [v['item_icon'] for _k, v in menu['items'].items()]
+        icons = [v.get('item_icon', 'default_icon') for _k, v in menu['items'].items()]
         return icons
 
     kwargs = {
