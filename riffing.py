@@ -339,7 +339,7 @@ menu = {
             'action': None, 'item_icon': 'funnel', 'submenu': {
                 'title': None,
                 'items': { 
-                    'Aggregate Filter' : {'action': aggframe, 'item_icon': 'table-landscape', 'submenu': None},
+                    'Aggregate Filter' : {'action': aggframe, 'item_icon': 'tablet-landscape', 'submenu': None},
                     'Analysis Tab 1' : {'action': analysis1, 'item_icon': 'file-earmark-check', 'submenu': None},
                     'Analysis Tab 2' : {'action': lambda: analysis2(df), 'item_icon': 'file-earmark-plus', 'submenu': None},
                 },
