@@ -21,7 +21,8 @@ df = load_data('oraclecomb.csv')
 def intro_page():
     col1 , col2 = st.columns(2)
     with col1:
-        st.subheader("Oracle Tool: Introduction")
+        with st.container(border=true):
+            st.subheader("Oracle Tool: Introduction")
         st.markdown(f'###### Welcome! :wave:')
         st.markdown('This Tool has been designed to assist Oracle in Filtering through potential corporate partners.\n\n'
                 'It contains over 6,000 companies and assesses them based on our 4 C Framework represented by the **Oracle Score** and its subcomponents the, **Culture Score**, **Capactiy Score**, **Conduct Score**, and **Collaboration Score**.')
