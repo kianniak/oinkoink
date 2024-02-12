@@ -183,8 +183,8 @@ def generate_chart(df, stats, selected_score, chart_type):
     overall_average = stats[selected_score][overall_average_key]
     fig.add_hline(y=overall_average, line_dash="dot", annotation_text="Avg", 
                   annotation_position="top right" if chart_type != 'industry' else "bottom right")
+    fig.update_layout(xaxis_title='', yaxis_title='', legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1))
     st.plotly_chart(fig)
-
 ##swarm chart
 ##Create swarm chart
 def create_strip_plot(filtered_data, selected_score):
@@ -215,7 +215,7 @@ def create_strip_plot(filtered_data, selected_score):
         orientation='h'))
     return swarm
 
-##Create Box Plot
+#company select
 def create_company_selectbox(df, key):
     df_sorted = df.sort_values(by='Oracle Score', ascending=False)
     companies_sorted = df_sorted['Company'].unique()
@@ -280,7 +280,6 @@ def calculate_country_metrics(df, selected_country='United Kingdom'):
         "lowest_avg_score_country": lowest_avg_score_country,
         "lowest_avg_score_value": lowest_avg_score_value
     }
-import plotly.express as px
 
 #heatmap
 def plot_choropleth(country_counts):
@@ -510,4 +509,3 @@ def SDG_Impact_Alignment(df, selected_company, show_all_data):
     st.markdown('')
     st.markdown(f"#### Plotted Revenue Alignment/Misalignment to SDGs")
     st.plotly_chart(fig)
-
