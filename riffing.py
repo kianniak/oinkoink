@@ -60,11 +60,7 @@ def aggframe():
     col2.metric(label="UK Companies", value=f"{stats['total_filtered_uk_companies']:,}")
     col3.metric(label="Highest Oracle Score", value="{:.2f}".format(stats['highest_oracle_score']))
     col4.metric(label="Median Oracle Score", value="{:.2f}".format(stats['median_oracle_score']))
-    col1, col2 = st.columns([0.1, 0.9])
-    with col1:
-        st.markdown('Table -')
-    with col2:
-        st.markdown('Dynamically updated based on where filters set.')
+    st.markdown('Data Table')
     filtered_df = filtered_data.sort_values(by='Oracle Score', ascending=False)
     st.data_editor(filtered_df, use_container_width=True, hide_index=True)
     csv = filtered_df.to_csv(index=False)
@@ -93,15 +89,6 @@ def analysis1():
     for j in range(len(top_5_companies), num_of_columns):
         cols[j].empty()
     st.divider()
-    st.markdown(f'Mean, Median and Highest Score on {selected_score}')
-    metrics = df[selected_score].describe()
-    col1, col2, col3= st.columns(3)
-    with col1:
-        st.metric(label="Median", value=f"{metrics['50%']:.2f}", delta ="None", delta_color="off")
-    with col2:
-        st.metric(label="Mean", value=f"{metrics['mean']:.2f}", delta =f"{metrics['mean'] - metrics['50%']:.2f}")
-    with col3:
-        st.metric(label="Highest Score", value=f"{metrics['max']:.2f}", delta =f"{metrics['max'] - metrics['50%']:.2f}")
     st.subheader('Swarm Chart of Filtered Metrics')
     st.markdown(f'This chart shows the distribution of scores for the {selected_score}.  Each industry type is colour coded. Hover over a value for more information including company name')          
     with st.expander('Click To Expand For More Information About Swarm Charts'):
@@ -112,6 +99,14 @@ def analysis1():
     swarm_plot = create_strip_plot(filtered_data, selected_score)
     st.plotly_chart(swarm_plot)
     st.divider()
+    st.markdown(f'Mean, Median and Highest Score on {selected_score}')
+    metrics = df[selected_score].describe()
+    col1, col2, col3= st.columns(3)
+    with col1:
+        st.metric(label="Median", value=f"{metrics['50%']:.2f}", delta ="None", delta_color="off")
+        st.metric(label="Mean", value=f"{metrics['mean']:.2f}", delta =f"{metrics['mean'] - metrics['50%']:.2f}")
+        st.metric(label="Highest Score", value=f"{metrics['max']:.2f}", delta =f"{metrics['max'] - metrics['50%']:.2f}")
+
     st.subheader(f"{selected_score} and Components by Industry")
     metrics = calculate_metrics(filtered_data, selected_score)
     industry_median_scores, highest_industry, highest_company, lowest_industry, lowest_company = metrics
@@ -130,82 +125,49 @@ def analysis1():
         st.markdown(f'##### {lowest_company}')
     st.markdown(f'This chart shows the Average Scores across Industries for {selected_score}.  Each industry type is colour coded. Filters on the Side Allow us to Isolate Specific Additional Characteristics')          
     stats = calculate_stats(df, filtered_data, selected_score)
+    generate_chart(df, filtered_data, selected_score, "size")
     generate_chart(df, stats, selected_score, "industry")
-def analysis2(df):
+
     filtered_data = st.session_state['filtered_data']
     filtered_data2 = df.groupby('Country').filter(lambda x: len(x) > 20)
     st.subheader('Geographical and Company Size Distribution')
     score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score']
-    selected_score = st.selectbox('Click To Select Score for Statistics on Metrics', score_columns)
     stats = calculate_stats(df, filtered_data, selected_score)
-    col1, col2 = st.columns([1.7,1])
-    with col1:
-        selected_country='United Kingdom'
-        country_metrics = calculate_country_metrics(filtered_data, selected_country)
-        generate_chart(filtered_data, stats, selected_score, "region")
-    st.divider()
-    with col2:
-        generate_chart(df, filtered_data, selected_score, "size")
-    df_gapminder = px.data.gapminder()
-    recognized_countries = df_gapminder['country'].unique()
-    df['Mapped Country'] = df['Country'].apply(lambda country: find_closest_match(country, recognized_countries))
-    df['Country'] = df['Mapped Country']            
-    country_counts = filtered_data2['Country'].value_counts().reset_index()
-    country_counts.columns = ['Country', 'count']
-    df = filtered_data2.groupby('Country').filter(lambda x: len(x) > 20)
     st.subheader('Oracle Score Coverage: Regional Concentrations')
-    col1, col2, col3, col4 = st.columns(4)
-    country_metrics_data = calculate_stats(df, filtered_data2, selected_score)
+    col1, col2, col3 = st.columns([0.3, 0.67, 0.3], gap='small')
     with col1:
-        st.metric(label="Home Market Companies Rated", value=f"UK - {country_metrics_data['total_uk_companies']:,}")
+            df_gapminder = px.data.gapminder()
+            recognized_countries = df_gapminder['country'].unique()
+            df['Mapped Country'] = df['Country'].apply(lambda country: find_closest_match(country, recognized_countries))
+            df['Country'] = df['Mapped Country']            
+            country_counts = filtered_data2['Country'].value_counts().reset_index()
+            country_counts.columns = ['Country', 'count']
+            df = filtered_data2.groupby('Country').filter(lambda x: len(x) > 20)
+            country_metrics_data = calculate_stats(df, filtered_data2, selected_score)
+            st.metric(label="Home Market Companies Rated", value=f"UK - {country_metrics_data['total_uk_companies']:,}")
+            st.metric(label="Region With Most Companies Rated", value=f"{country_metrics_data['most_companies_country']} - {country_metrics_data['most_companies_count']:,}")
+            st.metric(label="Home Market Average Oracle Score", value=f"UK - {country_metrics_data['uk_avg_score']:.2f}")
+            st.metric(label="Highest Average Oracle Score (n > 20)", value=f"{country_metrics_data['highest_avg_score_country']} - {country_metrics_data['highest_avg_score_value']:.2f}")
     with col2:
-        st.metric(label="Region With Most Companies Rated", value=f"{country_metrics_data['most_companies_country']} - {country_metrics_data['most_companies_count']:,}")
-    with col3:
-        st.metric(label="Home Market Average Oracle Score", value=f"UK - {country_metrics_data['uk_avg_score']:.2f}")
-    with col4:
-        st.metric(label="Highest Average Oracle Score (n > 20)", value=f"{country_metrics_data['highest_avg_score_country']} - {country_metrics_data['highest_avg_score_value']:.2f}")
-    col5, col6 = st.columns(2)
-    with col5:
         st.plotly_chart(plot_choropleth(country_counts))
-    with col6:
-        st.plotly_chart(plot_bar_chart(country_metrics_data['region_country_counts']), theme='streamlit')
-def analysis2(df):
-    filtered_data = st.session_state['filtered_data']
-    filtered_data2 = df.groupby('Country').filter(lambda x: len(x) > 20)
-    st.subheader('Geographical and Company Size Distribution')
-    score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score']
-    selected_score = st.selectbox('Click To Select Score for Statistics on Metrics', score_columns)
-    stats = calculate_stats(df, filtered_data, selected_score)
-    col1, col2 = st.columns([1.7,1])
-    with col1:
+    with col3:
         selected_country='United Kingdom'
-        generate_chart(filtered_data, stats, selected_score, "region")
-    st.divider()
-    with col2:
-        generate_chart(df, filtered_data, selected_score, "size")
-    df_gapminder = px.data.gapminder()
-    recognized_countries = df_gapminder['country'].unique()
-    df['Mapped Country'] = df['Country'].apply(lambda country: find_closest_match(country, recognized_countries))
-    df['Country'] = df['Mapped Country']            
-    country_counts = filtered_data2['Country'].value_counts().reset_index()
-    country_counts.columns = ['Country', 'count']
-    df = filtered_data2.groupby('Country').filter(lambda x: len(x) > 20)
-    st.subheader('Oracle Score Coverage: Regional Concentrations')
-    col1, col2, col3, col4 = st.columns(4)
-    country_metrics_data = calculate_stats(df, filtered_data2, selected_score)
-    with col1:
-        st.metric(label="Home Market Companies Rated", value=f"UK - {country_metrics_data['total_uk_companies']:,}")
-    with col2:
-        st.metric(label="Region With Most Companies Rated", value=f"{country_metrics_data['most_companies_country']} - {country_metrics_data['most_companies_count']:,}")
-    with col3:
-        st.metric(label="Home Market Average Oracle Score", value=f"UK - {country_metrics_data['uk_avg_score']:.2f}")
-    with col4:
-        st.metric(label="Highest Average Oracle Score (n > 20)", value=f"{country_metrics_data['highest_avg_score_country']} - {country_metrics_data['highest_avg_score_value']:.2f}")
-    col5, col6 = st.columns(2)
-    with col5:
-        st.plotly_chart(plot_choropleth(country_counts))
-    with col6:
-        st.plotly_chart(plot_bar_chart(country_metrics_data['region_country_counts']), theme='streamlit')
+        st.dataframe(filtered_data2[filtered_data2['Country'] == selected_country].sort_values(by=selected_score, ascending=False).head(10),
+                        column_order=("Company", {selected_score}),
+                        hide_index=True,
+                        width=None,
+                        column_config={
+                            "Company": st.column_config.TextColumn(
+                                "Company",
+                            ),
+                            {selected_score}: st.column_config.ProgressColumn(
+                                {selected_score},
+                                format="%f",
+                                min_value=0,
+                                max_value=max(filtered_data2[selected_score].max(), 1),
+                            )
+                        }
+                    )
 
 def deepdive():
     st.subheader("Company Deep Dive")
@@ -340,8 +302,7 @@ menu = {
                 'title': None,
                 'items': { 
                     'Aggregate Filter' : {'action': aggframe, 'item_icon': 'funnel', 'submenu': None},
-                    'Analysis Tab 1' : {'action': analysis1, 'item_icon': 'file-earmark-check', 'submenu': None},
-                    'Analysis Tab 2' : {'action': lambda: analysis2(df), 'item_icon': 'file-earmark-plus', 'submenu': None},
+                    'Analysis Tab 1' : {'action': analysis1, 'item_icon': 'file-earmark-check', 'submenu': None}
                 },
                 'menu_icon': 'postcard',
                 'default_index': 0,
