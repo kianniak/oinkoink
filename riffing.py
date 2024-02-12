@@ -44,7 +44,7 @@ def intro_page():
 
 def aggframe(): 
     st.subheader("Oracle Score Dashboard")
-    col1, col2, col3 = st.columns(3)
+    col1, col2, = st.columns([0.2, 0.8])
     with col1:
         st.markdown('Filters')
     with col2:
@@ -59,7 +59,7 @@ def aggframe():
     col2.metric(label="UK Companies", value=f"{stats['total_filtered_uk_companies']:,}")
     col3.metric(label="Highest Oracle Score", value="{:.2f}".format(stats['highest_oracle_score']))
     col4.metric(label="Median Oracle Score", value="{:.2f}".format(stats['median_oracle_score']))
-    col1, col2 = st.columns(2)
+    col1, col2 = st.columns([0.2, 0.8])
     with col1:
         st.markdown('Filtered Table')
     with col2:
@@ -103,16 +103,17 @@ def analysis1():
     with col3:
         st.metric(label="Highest Score", value=f"{metrics['max']:.2f}", delta =f"{metrics['max'] - metrics['50%']:.2f}")
     st.subheader('Swarm Chart of Filtered Metrics')
+    st.markdown(f'This chart shows the distribution of scores for the {selected_score}.  Each industry type is colour coded. Hover over a value for more information including company name')          
     with st.expander('Click To Expand For More Information About Swarm Charts'):
             st.markdown('Swarm Charts are often used to display distribution on metrics.\n\n'
             'For example, in a business context, a swarm chart could display customer ratings for different products. Each dot represents a customer rating, and a dense cluster of dots at a high rating level indicates a well-received product.\n\n'
             'In our Case they show how companies by industry perform across our 4 Cs and the Oracle Score.\n\n'
             'Swarm charts can quickly highlight patterns in the distribution of scores. This makes them useful for understanding how the scores are distributed which assists in helping us get a feel for the general feel of the distribtution while clearly marking out potential outliers')
-    st.markdown(f'This chart shows the distribution of scores for the {selected_score}.  Each industry type is colour coded. Hover over a value for more information including company name')          
     swarm_plot = create_strip_plot(filtered_data, selected_score)
     st.plotly_chart(swarm_plot)
     st.divider()
     st.subheader(f"{selected_score} and Components by Industry")
+    calculate_metrics(df, filtered_data, selected_score)
     col1, col2, col3, col4 = st.columns(4)
     with col1:
         st.text('Highest Industry (by median):')
@@ -378,3 +379,4 @@ def show_menu(menu):
 
 show_menu(menu)
 st.write('Kian 2023. :gear: :mag: for Oracle.')
+
