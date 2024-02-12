@@ -113,6 +113,7 @@ def analysis1():
     st.divider()
     st.subheader(f"{selected_score} and Components by Industry")
     metrics = calculate_metrics(filtered_data, selected_score)
+    industry_median_scores, highest_industry, highest_company, lowest_industry, lowest_company = metrics
     col1, col2, col3, col4 = st.columns(4)
     with col1:
         st.text('Highest Industry (by median):')
@@ -129,7 +130,7 @@ def analysis1():
     st.markdown(f'This chart shows the Average Scores across Industries for {selected_score}.  Each industry type is colour coded. Filters on the Side Allow us to Isolate Specific Additional Characteristics')          
     stats = calculate_stats(df, filtered_data, selected_score)
     generate_chart(df, stats, selected_score, "industry")
-def analysis2():
+def analysis2(df):
     filtered_data = st.session_state['filtered_data']
     st.subheader('Geographical and Company Size Distribution')
     score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score']
@@ -311,7 +312,7 @@ menu = {
                 'items': { 
                     'Aggregate Filter' : {'action': aggframe, 'table-landscape': 'key', 'submenu': None},
                     'Analysis Tab 1' : {'action': analysis1, 'item_icon': 'file-earmark-check', 'submenu': None},
-                    'Analysis Tab 2' : {'action': analysis2, 'item_icon': 'file-earmark-plus', 'submenu': None},
+                    'Analysis Tab 2' : {'action': lambda: analysis2(df), 'item_icon': 'file-earmark-plus', 'submenu': None},
                 },
                 'menu_icon': 'postcard',
                 'default_index': 0,
