@@ -1,4 +1,4 @@
-import pandas as pd
+fimport pandas as pd
 import numpy as np
 import streamlit as st
 import math
@@ -21,7 +21,7 @@ df = load_data('oraclecomb.csv')
 def intro_page():
     col1 , col2 = st.columns(2)
     with col1:
-        with st.container(border=true):
+        with st.container(border=True):
             st.subheader("Oracle Tool: Introduction")
         st.markdown(f'###### Welcome! :wave:')
         st.markdown('This Tool has been designed to assist Oracle in Filtering through potential corporate partners.\n\n'
