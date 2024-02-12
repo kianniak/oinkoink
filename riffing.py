@@ -11,7 +11,9 @@ from streamlit_server_state import server_state, server_state_lock
 import streamlit_shadcn_ui as ui
 from utils import get_filtered_data, load_data, calculate_stats, calculate_metrics, SDG_Impact_Alignment, calculate_country_metrics, selected_score, create_radar_chart, create_strip_plot, generate_chart, create_company_selectbox, create_gauge_options, sdg_expander, find_closest_match, plot_choropleth, plot_bar_chart, filter_dataframe
 
-st.set_page_config(page_title="Oracle Partnerships with Purpose Tool", page_icon="🔍", layout="wide", initial_sidebar_state="expanded")
+
+if __name__ == "__main__":
+    st.set_page_config(page_title="Oracle Partnerships with Purpose Tool", page_icon="🔍", layout="wide", initial_sidebar_state="expanded")
 
 df = load_data('oraclecomb.csv')
 
