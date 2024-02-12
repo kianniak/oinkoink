@@ -9,7 +9,7 @@ from streamlit_echarts import st_echarts
 from streamlit_option_menu import option_menu
 from streamlit_server_state import server_state, server_state_lock
 import streamlit_shadcn_ui as ui
-from utils import get_filtered_data, load_data, calculate_stats, calculate_metrics, SDG_Impact_Alignment, calculate_country_metrics, selected_score, create_radar_chart, create_strip_plot, generate_chart, create_company_selectbox, create_gauge_options, sdg_expander, find_closest_match, plot_choropleth, plot_bar_chart, filter_dataframe
+from utils import get_filtered_data, load_data, calculate_stats, calculate_metrics, SDG_Impact_Alignment, calculate_country_metrics, selected_score, create_radar_chart, create_strip_plot, generate_chart, create_company_selectbox, create_gauge_options, sdg_expander, find_closest_match, plot_choropleth, filter_dataframe
 
 
 if __name__ == "__main__":
@@ -71,11 +71,12 @@ def aggframe():
         mime='text/csv',
     )
 def analysis1():
-    filtered_data = st.session_state['filtered_data']
+    df = load_data('oraclecomb.csv')
+    filtered_data = get_filtered_data(df)
     st.subheader('Select a Score Category to See its Distribution and the Top 5 Best Performing Companies')
     score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score']
     selected_score = st.selectbox('Click To Select Score Category', score_columns)
-    stats = calculate_stats(filtered_data, filtered_data, selected_score)
+    stats = calculate_stats(df, filtered_data, selected_score)
     st.markdown(f'Top 5 Companies for {selected_score}')
     st.caption(f'These are the Top 5 Companies on the {selected_score}. The arrow shows the distance from the median score value.')
     filtered_data = st.session_state['filtered_data']
@@ -84,7 +85,7 @@ def analysis1():
     for i, row in enumerate(top_5_companies.iterrows()):
         label = f"{row[1]['Company']}"  
         value = row[1][selected_score] 
-        cols[i].metric(label=label, value="{:.2f}".format(value), delta = "{:.2f}".format(value - df[selected_score].median()))
+        cols[i].metric(label=label, value="{:.2f}".format(value), delta = "{:.2f}".format(value - filtered_data[selected_score].median()))
     num_of_columns = 5
     for j in range(len(top_5_companies), num_of_columns):
         cols[j].empty()
@@ -99,40 +100,79 @@ def analysis1():
     swarm_plot = create_strip_plot(filtered_data, selected_score)
     st.plotly_chart(swarm_plot)
     st.divider()
-    st.markdown(f'Mean, Median and Highest Score on {selected_score}')
-    metrics = df[selected_score].describe()
-    col1, col2, col3= st.columns(3)
+    st.subheader(f'Mean, Median, Highest and Lowest Score on {selected_score}')
+    metrics = filtered_data[selected_score].describe()
+    max_score = metrics['max']
+    min_score = metrics['min']
+    median_score = metrics['50%']
+    mean_score = metrics['mean']
+    col1, col2, col3 = st.columns([1,1.5,4])
     with col1:
-        st.metric(label="Median", value=f"{metrics['50%']:.2f}", delta ="None", delta_color="off")
-        st.metric(label="Mean", value=f"{metrics['mean']:.2f}", delta =f"{metrics['mean'] - metrics['50%']:.2f}")
-        st.metric(label="Highest Score", value=f"{metrics['max']:.2f}", delta =f"{metrics['max'] - metrics['50%']:.2f}")
-
-    st.subheader(f"{selected_score} and Components by Industry")
-    metrics = calculate_metrics(filtered_data, selected_score)
-    industry_median_scores, highest_industry, highest_company, lowest_industry, lowest_company = metrics
-    col1, col2, col3, col4 = st.columns(4)
-    with col1:
+        st.metric(label="Median", value=f"{median_score:.2f}", delta ="None", delta_color="off")
+        st.metric(label="Mean", value=f"{mean_score:.2f}", delta =f"{mean_score - median_score:.2f}")
+        st.metric(label="Highest Score", value=f"{max_score:.2f}", delta =f"{max_score - median_score:.2f}")
+        st.metric(label="Lowest Score", value=f"{min_score:.2f}", delta =f"{min_score - median_score:.2f}")
+    with col2:
+        metrics = calculate_metrics(filtered_data, selected_score)
+        industry_median_scores, highest_industry, highest_company, lowest_industry, lowest_company = metrics
         st.text('Highest Industry (by median):')
-        st.markdown(f'##### {highest_industry}')    
-    with col2:        
-        st.text('Lowest Industry (by median):')
-        st.markdown(f'##### {lowest_industry}')    
-    with col3:
+        st.markdown(f'##### {highest_industry}')   
+        st.markdown("")
+        st.markdown("")
         st.text('Highest Company:')
-        st.markdown(f'##### {highest_company}')    
-    with col4:
+        st.markdown(f'##### {highest_company}')   
+        st.markdown("")
+        st.markdown("")
+        st.text('Lowest Industry (by median):')
+        st.markdown(f'##### {lowest_industry}') 
+        st.markdown("")
+        st.markdown("")
         st.text('Lowest Company:')
         st.markdown(f'##### {lowest_company}')
+    with col3:
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(
+            x=[min_score, median_score, mean_score, max_score],
+            y=[selected_score]*4,
+            text=['Min', 'Median', 'Mean', 'Max'],
+            mode='markers+text',
+            textposition="top center",
+            marker=dict(color=['blue', 'red', 'green', 'orange'], size=10),
+            showlegend=False
+        ))
+
+        fig.update_layout(
+            shapes=[
+                dict(type="line", xref="x", yref="y",
+                    x0=min_score, y0=-0.25, x1=min_score, y1=0.25,
+                    line=dict(color="blue", width=3)),
+                dict(type="line", xref="x", yref="y",
+                    x0=median_score, y0=-0.25, x1=median_score, y1=0.25,
+                    line=dict(color="red", width=3)),
+                dict(type="line", xref="x", yref="y",
+                    x0=mean_score, y0=-0.25, x1=mean_score, y1=0.25,
+                    line=dict(color="green", width=3)),
+                dict(type="line", xref="x", yref="y",
+                    x0=max_score, y0=-0.25, x1=max_score, y1=0.25,
+                    line=dict(color="orange", width=3)),
+            ],
+            xaxis=dict(range=[min_score - 5, max_score + 5], autorange=False),
+            yaxis=dict(showticklabels=False, range=[-0.5, 0.5]),
+            title=f"Bullet Chart: Min, Max, Median, and Mean for {selected_score}"
+        )
+        st.plotly_chart(fig)
+
+
+
+    st.subheader(f"{selected_score} and Components by Industry")
     st.markdown(f'This chart shows the Average Scores across Industries for {selected_score}.  Each industry type is colour coded. Filters on the Side Allow us to Isolate Specific Additional Characteristics')          
     stats = calculate_stats(df, filtered_data, selected_score)
-    generate_chart(df, filtered_data, selected_score, "size")
     generate_chart(df, stats, selected_score, "industry")
     filtered_data2 = df.groupby('Country').filter(lambda x: len(x) > 20)
-    st.subheader('Geographical and Company Size Distribution')
     score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score']
     stats = calculate_stats(df, filtered_data, selected_score)
-    st.subheader('Oracle Score Coverage: Regional Concentrations')
-    col1, col2, col3 = st.columns([0.3, 0.67, 0.3], gap='small')
+    st.subheader(f'{selected_score} Coverage: Regional Concentrations')
+    col1, col2, col3 = st.columns([1, 2, 1.5], gap='small')
     with col1:
             df_gapminder = px.data.gapminder()
             recognized_countries = df_gapminder['country'].unique()
@@ -142,30 +182,31 @@ def analysis1():
             country_counts.columns = ['Country', 'count']
             df = filtered_data2.groupby('Country').filter(lambda x: len(x) > 20)
             country_metrics_data = calculate_stats(df, filtered_data2, selected_score)
-            st.metric(label="Home Market Companies Rated", value=f"UK - {country_metrics_data['total_uk_companies']:,}")
+            st.markdown('')
+            st.metric(label="UK Companies Rated", value=f"{country_metrics_data['total_uk_companies']:,}")
+            st.markdown('')
+            st.metric(label="Average UK Company Score", value=f"{country_metrics_data['uk_avg_score']:.2f}")
+            st.markdown('')
             st.metric(label="Region With Most Companies Rated", value=f"{country_metrics_data['most_companies_country']} - {country_metrics_data['most_companies_count']:,}")
-            st.metric(label="Home Market Average Oracle Score", value=f"UK - {country_metrics_data['uk_avg_score']:.2f}")
-            st.metric(label="Highest Average Oracle Score (n > 20)", value=f"{country_metrics_data['highest_avg_score_country']} - {country_metrics_data['highest_avg_score_value']:.2f}")
     with col2:
         st.plotly_chart(plot_choropleth(country_counts))
+    avg_scores = filtered_data2.groupby('Country')[selected_score].mean().round(2).reset_index()
     with col3:
-        selected_country='United Kingdom'
-        st.dataframe(filtered_data2[filtered_data2['Country'] == selected_country].sort_values(by=selected_score, ascending=False).head(10),
-                        column_order=("Company", {selected_score}),
-                        hide_index=True,
-                        width=None,
-                        column_config={
-                            "Company": st.column_config.TextColumn(
-                                "Company",
-                            ),
-                            {selected_score}: st.column_config.ProgressColumn(
-                                {selected_score},
-                                format="%f",
-                                min_value=0,
-                                max_value=max(filtered_data2[selected_score].max(), 1),
-                            )
-                        }
-                    )
+        st.dataframe(
+            avg_scores.sort_values(by=selected_score, ascending=False).head(10),
+            column_order=["Country", selected_score],
+            hide_index=True,
+            width=480,
+            column_config={
+                "Country": st.column_config.TextColumn("Country"),
+                selected_score: st.column_config.ProgressColumn(
+                    selected_score,
+                    format="%f",
+                    min_value=0,
+                    max_value=max(avg_scores[selected_score].max(), 1),
+                )
+            }
+        )
 
 def deepdive():
     st.subheader("Company Deep Dive")
@@ -263,7 +304,6 @@ def deepdive():
                 show_comparison = st.toggle('Show Selected Comparator', value=False)
             radar_chart = create_radar_chart(df, scores, score_columns, selected_company, option, show_median, show_comparison)
             st.plotly_chart(radar_chart)
-            st.divider()
 
     st.subheader(f'SDG Revenue Alignment - {option}')
     sdg_expander()
@@ -367,4 +407,5 @@ def show_menu(menu):
 
 show_menu(menu)
 st.write('Kian 2024. :gear: :mag: for Oracle.')
+
 
