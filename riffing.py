@@ -75,7 +75,7 @@ def analysis1():
     st.subheader('Select a Score Category to See its Distribution and the Top 5 Best Performing Companies')
     score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score']
     selected_score = st.selectbox('Click To Select Score Category', score_columns)
-    stats = calculate_stats(df, filtered_data, selected_score)
+    stats = calculate_stats(filtered_data, filtered_data, selected_score)
     st.markdown(f'Top 5 Companies for {selected_score}')
     st.caption(f'These are the Top 5 Companies on the {selected_score}. The arrow shows the distance from the median score value.')
     filtered_data = st.session_state['filtered_data']
@@ -127,8 +127,6 @@ def analysis1():
     stats = calculate_stats(df, filtered_data, selected_score)
     generate_chart(df, filtered_data, selected_score, "size")
     generate_chart(df, stats, selected_score, "industry")
-
-    filtered_data = st.session_state['filtered_data']
     filtered_data2 = df.groupby('Country').filter(lambda x: len(x) > 20)
     st.subheader('Geographical and Company Size Distribution')
     score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score']
@@ -369,3 +367,4 @@ def show_menu(menu):
 
 show_menu(menu)
 st.write('Kian 2024. :gear: :mag: for Oracle.')
+
