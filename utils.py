@@ -163,12 +163,12 @@ def generate_chart(df, stats, selected_score, chart_type):
         data_key = 'average_scores_size'
         category = 'Company Size'
         overall_average_key = 'overall_average_size'
-        chart_width = 550
+        chart_width = 400
     elif chart_type == 'region':
         data_key = 'average_scores_region'
         category = 'Region'
         overall_average_key = 'overall_average_region'
-        chart_width = 800
+        chart_width = 500
     elif chart_type == 'industry':
         data_key = 'average_scores_industry'
         category = 'Industry'
@@ -293,7 +293,7 @@ def plot_choropleth(country_counts):
     fig.update_layout(title_text='Global Distribution of Companies in Analysis',
                       hoverlabel=dict(
                           bgcolor="white",
-                          font_size=16,
+                          font_size=14,
                           font_family="Arial"
                       ))
     return fig
@@ -306,15 +306,18 @@ def plot_bar_chart(region_country_counts):
     return fig
 
 ##guage and guage options chart creation###
-def create_gauge_chart(score, title):
+def create_gauge_chart(score, median_oracle_score, title):
     fig = go.Figure(go.Indicator(
-        mode="gauge+number",
+        mode="gauge+number+delta",
         value=score,
+        delta={'reference': median_oracle_score},  # Show the difference from the median score
         title={'text': title},
         domain={'x': [0, 1], 'y': [0, 1]},
         gauge={
             'axis': {'range': [None, 100], 'tickwidth': 1},
-            'bar': {'color': "darkblue"}}))
+            'bar': {'color': "darkblue"},
+            'steps': [{'range': [0, median_oracle_score], 'color': 'lightgray'}]  # Show the median score on the gauge
+        }))
     fig.update_layout(width=300, height=300)
     return fig
 def create_gauge_options(score, median_oracle_score, title):
@@ -458,8 +461,8 @@ def create_sdg_chart(df, show_all_data):
     largest_misaligned_sdg = None
     largest_misaligned_value = 0
     for i in range(1, 16):
-        sdg_aligned_key = f'Sdg {i}: Aligned'
-        sdg_misaligned_key = f'Sdg {i}: Misaligned'
+        sdg_aligned_key = f'SDG {i}: Aligned'
+        sdg_misaligned_key = f'SDG {i}: Misaligned'
         if sdg_aligned_key in df.columns and sdg_misaligned_key in df.columns:
             aligned_value = df[sdg_aligned_key].iloc[0]
             misaligned_value = df[sdg_misaligned_key].iloc[0]
