@@ -365,7 +365,7 @@ menu = {
             }
         }
     },
-    'menu_icon': 'option',
+    'menu_icon': 'ui-checks-grid',
     'default_index': 0,
     'with_view_panel': 'sidebar',
     'orientation': 'vertical',
