@@ -139,6 +139,7 @@ def analysis2(df):
     stats = calculate_stats(df, filtered_data, selected_score)
     col1, col2 = st.columns([1.7,1])
     with col1:
+        selected_country='United Kingdom'
         country_metrics = calculate_country_metrics(filtered_data, selected_country)
         generate_chart(filtered_data, stats, selected_score, "region")
     st.divider()
