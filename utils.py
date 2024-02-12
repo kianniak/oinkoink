@@ -71,9 +71,8 @@ def filter_dataframe(df, b_corp_filter, company_names, regions, industries, comp
 
 def get_filtered_data(df):
     # B Corp filter
-    with st.sidebar:
-        is_b_corp = st.checkbox('Only Display Designated B Corps', value=False)
-        b_corp_filter = 'Yes' if is_b_corp else None
+    is_b_corp = st.checkbox('Only Display Designated B Corps', value=False)
+    b_corp_filter = 'Yes' if is_b_corp else None
 
     # Company and score filters
     col1, col2 = st.columns(2, gap="small")
@@ -498,8 +497,7 @@ def create_sdg_chart(df, show_all_data):
             fig.update_yaxes(tickvals=sdg_labels, ticktext=sdg_labels, autorange="reversed", row=1, col=1)
             fig.update_yaxes(tickvals=sdg_labels, ticktext=sdg_labels, autorange="reversed", row=1, col=2)
     return fig, largest_aligned_sdg, largest_aligned_value, largest_misaligned_sdg, largest_misaligned_value
-def SDG_Impact_Alignment():
-    option = selected_company
+def SDG_Impact_Alignment(df, selected_company, show_all_data):
     show_all_data = st.toggle("Show All Data", value=True)
     fig, largest_aligned_sdg, largest_aligned_value, largest_misaligned_sdg, largest_misaligned_value = create_sdg_chart(company_data, show_all_data)
     col1, col2 = st.columns([1, 1])
@@ -512,3 +510,4 @@ def SDG_Impact_Alignment():
     st.markdown('')
     st.markdown(f"#### Plotted Revenue Alignment/Misalignment to SDGs")
     st.plotly_chart(fig)
+
