@@ -71,7 +71,7 @@ def filter_dataframe(df, b_corp_filter, company_names, regions, industries, comp
 
 def get_filtered_data(df):
     # B Corp filter
-    is_b_corp = st.checkbox('Only Display Designated B Corps', value=False, key='b_corp')
+    is_b_corp = ui.checkbox(default_checked=False, label='Only Display Designated B Corps')
     b_corp_filter = 'Yes' if is_b_corp else None
 
     # Company and score filters
