@@ -34,7 +34,7 @@ def intro_page():
         st.markdown(f'###### Where do you want to go? :wave:')
 
         st.markdown('The page has two main sections: **Oracle Score Dashboard** :bar_chart: :mag:, **Deep Dive on a Company** :factory::eyes:\n\n'
-                '**Filter Aggregate Data** :bar_chart: :mag: Consists of three embedded tabs. In this section you can filter the database based on a number of different criteria. Data will automatically update as you adjust the sidebar values. This section also contains a number of charts and statistics to help you understand the data distribution breaking down the Oracle Score in to its subcomponents. Further tabs allow us to look at sub-components. This page is useful for giving users a well rounded view of the universe!\n\n'
+                '**Aggregate Data** :bar_chart: :mag: Consists of three embedded tabs. In this section you can filter the database based on a number of different criteria. Data will automatically update as you adjust the filter values. This section also contains a number of charts and statistics to help you understand the data distribution breaking down the Oracle Score in to its subcomponents. Further tabs allow us to look at sub-components. This page is useful for giving users a well rounded view of the universe!\n\n'
                 
                 '**Company Deep Dive** :factory::eyes: The page allows us to select a company from the dropdown and see a detailed overview of the company including performance on our 4Cs framework. Users can assess a Company performance across scores relative to a selected peer or the median of the universe. Lastly, users are shown a visual of company contribution to SDGs. This page is useful for understanding why a Company is rated as they are, what they might have in common with Oracle and is a launchpad to further research. \n\n'
             
@@ -43,14 +43,12 @@ def intro_page():
 
 
 def aggframe(): 
-    st.subheader(':sleuth_or_spy: Filters')
-    st.markdown('Use the Filters Below to Dynamically Narrow the Data Universe of Companies')
+    st.subheader("Oracle Score Dashboard")
+    st.markdown(':sleuth_or_spy: Filters')
+    st.caption('Use the Filters Below to Dynamically Narrow the Data Universe of Companies')
     filtered_data = get_filtered_data(df)
     st.session_state['filtered_data'] = filtered_data
-    score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score']
     stats = calculate_stats(df, filtered_data, selected_score)
-    
-    st.subheader("Oracle Score Dashboard")
     st.markdown('Stats for Current Filtered Universe')  
     col1 , col2, col3, col4 = st.columns(4)
     stats = calculate_stats(df, filtered_data, selected_score)
@@ -58,8 +56,7 @@ def aggframe():
     col2.metric(label="UK Companies", value=f"{stats['total_filtered_uk_companies']:,}")
     col3.metric(label="Highest Oracle Score", value="{:.2f}".format(stats['highest_oracle_score']))
     col4.metric(label="Median Oracle Score", value="{:.2f}".format(stats['median_oracle_score']))
-    
-    st.subheader('Filtered Table')
+    st.markdown('Filtered Table')
     st.caption('This table will dynamically update based where you set the sidebar filters. At startup it will show all companies in our analysis')
     filtered_df = filtered_data.sort_values(by='Oracle Score', ascending=False)
     st.data_editor(filtered_df, use_container_width=True, hide_index=True)
@@ -167,6 +164,7 @@ def analysis2():
 
 def deepdive():
     st.subheader("Company Deep Dive")
+    score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score']
     option = create_company_selectbox(df, "Company")  
     if option:
         company_data = df[df['Company'] == option]
@@ -294,7 +292,7 @@ menu = {
                 'items': { 
                     'Introduction' : {'action': intro_page, 'item_icon': 'list-task', 'submenu': None},
                     '3rd Party Data Used' : {'action': sdg_expander, 'item_icon': 'database-dash', 'submenu': None},
-                    'Proprietary Data Logic' : {'action': "", 'item_icon': 'database-check', 'submenu': None},
+                    'Proprietary Data Logic' : {'action': "", 'item_icon': 'list-task', 'submenu': None},
                 },
                 'menu_icon': 'filter-circle',
                 'default_index': 0,
@@ -303,11 +301,11 @@ menu = {
                 'styles': styles
             }
         },
-        'Filter Aggregate Data' : {
-            'action': None, 'item_icon': 'option', 'submenu': {
+        'Aggregate Data' : {
+            'action': None, 'item_icon': 'funnel', 'submenu': {
                 'title': None,
                 'items': { 
-                    'Aggregate Dataframe' : {'action': aggframe, 'table-landscape': 'key', 'submenu': None},
+                    'Aggregate Filter' : {'action': aggframe, 'table-landscape': 'key', 'submenu': None},
                     'Analysis Tab 1' : {'action': analysis1, 'item_icon': 'file-earmark-check', 'submenu': None},
                     'Analysis Tab 2' : {'action': analysis2, 'item_icon': 'file-earmark-plus', 'submenu': None},
                 },
@@ -333,7 +331,7 @@ menu = {
             }
         }
     },
-    'menu_icon': 'segmented-nav',
+    'menu_icon': 'option',
     'default_index': 0,
     'with_view_panel': 'sidebar',
     'orientation': 'vertical',
