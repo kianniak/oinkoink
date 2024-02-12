@@ -311,7 +311,7 @@ menu = {
             'action': None, 'item_icon': 'funnel', 'submenu': {
                 'title': None,
                 'items': { 
-                    'Aggregate Filter' : {'action': aggframe, 'table-landscape': 'key', 'submenu': None},
+                    'Aggregate Filter' : {'action': aggframe, 'item_icon': 'table-landscape', 'submenu': None},
                     'Analysis Tab 1' : {'action': analysis1, 'item_icon': 'file-earmark-check', 'submenu': None},
                     'Analysis Tab 2' : {'action': lambda: analysis2(df), 'item_icon': 'file-earmark-plus', 'submenu': None},
                 },
@@ -339,8 +339,8 @@ menu = {
     },
     'menu_icon': 'option',
     'default_index': 0,
-    'with_view_panel': 'sidebar',
-    'orientation': 'vertical',
+    'with_view_panel': 'main',
+    'orientation': 'horizontal',
     'styles': styles
 }
 
