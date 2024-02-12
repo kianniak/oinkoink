@@ -163,29 +163,37 @@ def generate_chart(df, stats, selected_score, chart_type):
         data_key = 'average_scores_size'
         category = 'Company Size'
         overall_average_key = 'overall_average_size'
+        orientation = 'v'
         chart_width = 400
     elif chart_type == 'region':
         data_key = 'average_scores_region'
         category = 'Region'
         overall_average_key = 'overall_average_region'
+        orientation = 'h'
         chart_width = 700
     elif chart_type == 'industry':
         data_key = 'average_scores_industry'
         category = 'Industry'
         overall_average_key = 'overall_average_industry'
+        orientation = 'v'
         chart_width = 1150
     else:
         raise ValueError("Invalid chart type. Choose from 'size', 'region', or 'industry'.")
 
     df_for_chart = stats[selected_score][data_key]
-    fig = px.bar(df_for_chart, x=category, y=selected_score, orientation='v', 
-                 title=f'Average {selected_score} by {category}', color=category, width=chart_width)
+    fig = px.bar(df_for_chart, x=category, y=selected_score, orientation=orientation, 
+             title=f'Average {selected_score} by {category}', color=category, width=chart_width)
     overall_average = stats[selected_score][overall_average_key]
-    fig.add_hline(y=overall_average, line_dash="dot", annotation_text="Avg", 
-                  annotation_position="top right" if chart_type != 'industry' else "bottom right")
+
+    if chart_type == 'region':
+        fig.add_vline(x=overall_average, line_dash="dot", annotation_text="Avg", 
+                      annotation_position="top right" if chart_type != 'industry' else "bottom right")
+    else:
+        fig.add_hline(y=overall_average, line_dash="dot", annotation_text="Avg", 
+                      annotation_position="top right" if chart_type != 'industry' else "bottom right")
+
     fig.update_layout(xaxis_title='', yaxis_title='', showlegend=False)    
-    st.plotly_chart(fig)
-##swarm chart
+    st.plotly_chart(fig, use_container_width=True)##swarm chart
 ##Create swarm chart
 def create_strip_plot(filtered_data, selected_score):
     swarm = px.strip(
@@ -296,14 +304,9 @@ def plot_choropleth(country_counts):
                           font_size=14,
                           font_family="Arial"
                       ),
-                      width=650)
+                      width=550)
     return fig
 
-def plot_bar_chart(region_country_counts):
-    fig = px.bar(region_country_counts, x='Region', y=region_country_counts.columns[1:], title='Number of Companies per Region',
-                 labels={'Region': 'Region', 'value': 'Count', 'variable': 'Country'})
-    fig.update_layout(xaxis_title='', yaxis_title='', showlegend=False, width=500)
-    return fig
 
 ##guage and guage options chart creation###
 def create_gauge_chart(score, median_oracle_score, title):
@@ -514,6 +517,5 @@ def SDG_Impact_Alignment(df, selected_company):
     st.markdown('')
     st.markdown(f"#### Plotted Revenue Alignment/Misalignment to SDGs")
     st.plotly_chart(fig)
-
 
 
