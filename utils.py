@@ -173,7 +173,7 @@ def generate_chart(df, stats, selected_score, chart_type):
         data_key = 'average_scores_industry'
         category = 'Industry'
         overall_average_key = 'overall_average_industry'
-        chart_width = 1100
+        chart_width = 1150
     else:
         raise ValueError("Invalid chart type. Choose from 'size', 'region', or 'industry'.")
 
@@ -200,7 +200,7 @@ def create_strip_plot(filtered_data, selected_score):
     xaxis_title=selected_score,
     yaxis_title='Count',
     autosize=False,
-    width=1100,  
+    width=1150,  
     height=600, 
     title_font=dict(size=20),  
     xaxis_tickfont=dict(size=14),  
@@ -296,7 +296,7 @@ def plot_choropleth(country_counts):
                           font_size=14,
                           font_family="Arial"
                       ),
-                      width=550)
+                      width=650)
     return fig
 
 def plot_bar_chart(region_country_counts):
@@ -318,7 +318,7 @@ def create_gauge_chart(score, median_oracle_score, title):
             'bar': {'color': "darkblue"},
             'steps': [{'range': [0, median_oracle_score], 'color': 'lightgray'}]  # Show the median score on the gauge
         }))
-    fig.update_layout(width=300, height=300)
+    fig.update_layout(width=400, height=300)
     return fig
 def create_gauge_options(score, median_oracle_score, title):
         options = {
