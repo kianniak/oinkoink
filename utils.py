@@ -12,7 +12,7 @@ from streamlit_option_menu import option_menu
 from streamlit_server_state import server_state, server_state_lock
 import streamlit_shadcn_ui as ui
 
-
+st.set_page_config(page_title="Oracle Partnerships with Purpose Tool", page_icon="🔍", layout="wide", initial_sidebar_state="expanded")
 display_columns = ['Company', 'Country', 'Industry', 'Region',
             'Company Size', 'Employees (Estimate)','Public Or Private', 
             'Oracle Score', 'Culture Score', 
@@ -33,6 +33,7 @@ display_columns = ['Company', 'Country', 'Industry', 'Region',
             'Sdg 14: Aligned', 'Sdg 14: Misaligned',
             'Sdg 15: Aligned', 'Sdg 15: Misaligned', 
             'Description', 'Website']
+
 
 @st.cache_data
 def load_data(file_name):
@@ -71,7 +72,7 @@ def filter_dataframe(df, b_corp_filter, company_names, regions, industries, comp
 
 def get_filtered_data(df):
     # B Corp filter
-    is_b_corp = st.checkbox('Only Display Designated B Corps', value=False)
+    is_b_corp = st.checkbox('Only Display Designated B Corps', value=False, key='b_corp')
     b_corp_filter = 'Yes' if is_b_corp else None
 
     # Company and score filters
@@ -514,4 +515,6 @@ def SDG_Impact_Alignment(df, selected_company):
     st.markdown('')
     st.markdown(f"#### Plotted Revenue Alignment/Misalignment to SDGs")
     st.plotly_chart(fig)
+
+
 
