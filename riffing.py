@@ -1,22 +1,15 @@
 import pandas as pd
-import numpy as np
 import streamlit as st
-import math
 import plotly.graph_objects as go
 import plotly.express as px
-from plotly.subplots import make_subplots
 from streamlit_echarts import st_echarts
 from streamlit_option_menu import option_menu
 from streamlit_server_state import server_state, server_state_lock
-import streamlit_shadcn_ui as ui
-from utils import get_filtered_data, load_data, calculate_stats, calculate_metrics, SDG_Impact_Alignment, calculate_country_metrics, selected_score, create_radar_chart, create_strip_plot, generate_chart, create_company_selectbox, create_gauge_options, sdg_expander, find_closest_match, plot_choropleth, filter_dataframe
+from utils import create_filters, get_filtered_data, load_data, calculate_stats, calculate_metrics, SDG_Impact_Alignment, selected_score, create_radar_chart, create_strip_plot, generate_chart, create_company_selectbox, create_gauge_options, sdg_expander, find_closest_match, plot_choropleth
 
 
-if __name__ == "__main__":
-    st.set_page_config(page_title="Oracle Partnerships with Purpose Tool", page_icon="🔍", layout="wide", initial_sidebar_state="expanded")
 
 df = load_data('oraclecomb.csv')
-
 ##function for IntroPage Text Wall
 def intro_page():
     col1 , col2 = st.columns(2)
@@ -24,34 +17,39 @@ def intro_page():
         st.subheader("Oracle Tool: Introduction")
         st.markdown(f'###### Welcome! :wave:')
         st.markdown('This Tool has been designed to assist Oracle in Filtering through potential corporate partners.\n\n'
-            'It contains over 6,000 companies and assesses them based on our 4 C Framework represented by the **Oracle Score** and its subcomponents the, **Culture Score**, **Capactiy Score**, **Conduct Score**, and **Collaboration Score**.')
+            'It contains over 6,000 companies and assesses them based on our 4 C Framework represented by the **Oracle Score** and its subcomponents the\n\n'
+              '**- Culture Score** **- Capactiy Score** **- Conduct Score** **- Collaboration Score**.')
         st.divider()
         st.subheader('Things to Note')
-        st.markdown('Please note that navigating between pages will reset the view while navigating between tabs will keep the filters intact. If an error occurs it is likely interaction between different sections filters. Please reset filters and try again.\n\n'
-            '**To better Understand terminology, data sources and calcultations, please refer to the additional tabs above this page**. This will give you a better understanding of key concepts such as the Sustainable Development Goals (SDGS), B Corp Methodology, Culture Indicators & Financial Metrics used and how we calculate our Oracle Score and its subcomponents. \n\n')
-        st.markdown('Further information on calculations, datasources and our freely shared code can be found on our Github. We are working to completely automate the collection and cleaning of data consistently and will update Oracle when we hit this milestone')
+        st.markdown('The Oracle Score is an estimation and the scores should merely give a guide to companies that may be useful to reach out to.\n\n'
+                    'Please note that navigating between pages will reset the view while navigating between tabs will keep the filters intact.\n\n' 
+                    'If an error occurs it is likely interaction between different filters. Please reset filters and try again.\n\n'
+            ':black_circle_for_record: **To better Understand terminology, data sources or calcultations used, please refer to the additional tabs above this page** :top:.\n\n')
+        st.markdown('We are working to provide complete background information as downloadables and through visualisation in the app. We are also refactoring code and will will update Oracle when available')
     with col2:
         st.subheader('Navigation')
-        st.markdown(f'###### Where do you want to go? :wave:')
-
-        st.markdown('The page has two main sections: **Oracle Score Dashboard** :bar_chart: :mag:, **Deep Dive on a Company** :factory::eyes:\n\n'
-                '**Aggregate Data** :bar_chart: :mag: Consists of three embedded tabs. In this section you can filter the database based on a number of different criteria. Data will automatically update as you adjust the filter values. This section also contains a number of charts and statistics to help you understand the data distribution breaking down the Oracle Score in to its subcomponents. Further tabs allow us to look at sub-components. This page is useful for giving users a well rounded view of the universe!\n\n'
-                
-                '**Company Deep Dive** :factory::eyes: The page allows us to select a company from the dropdown and see a detailed overview of the company including performance on our 4Cs framework. Users can assess a Company performance across scores relative to a selected peer or the median of the universe. Lastly, users are shown a visual of company contribution to SDGs. This page is useful for understanding why a Company is rated as they are, what they might have in common with Oracle and is a launchpad to further research. \n\n'
-            
+        st.markdown(f'###### Where do you want to go? :wave:\n\n'           
                 '**To Get Started** :page_facing_up: Use the **sidebar** on the left of the page to start exploring.')
-        st.divider()
+
+        st.markdown('Navigate between one of two main sections:\n\n'
+                ':one: **Aggregate Data** :bar_chart: :mag:\n\n'
+                'Consists of two embedded tabs. In this section you can filter the database based on a number of different criteria. Data will automatically update as you adjust the filter values. Tables are editable and downloadable.'
+                'This section also contains a number of charts and statistics to help you understand the data shapre & distribution giving users chance to break down the Oracle Score in to its subcomponents.'
+                'This page is useful for giving users a well rounded view of the universe!\n\n'
+                
+                ':two: **Company Deep Dive** :factory::eyes:\n\n' 
+                'The page allows us to select a company from the dropdown and see a detailed overview of the company including performance on our 4Cs framework.' 
+                'Users can assess a Company performance across scores relative to a selected peer or the median of the universe.' 
+                'Lastly, users are shown a visual of company contribution to SDGs.' 
+                'This page is useful for understanding why a Company is rated as they are, what they might have in common with Oracle and is a launchpad to further research. \n\n')
 
 
 def aggframe(): 
     st.subheader("Oracle Score Dashboard")
-    col1, col2, = st.columns([0.08, 0.92])
-    with col1:
-        st.markdown('Filters')
-    with col2:
-        st.markdown('Use the Filters Below to Dynamically Narrow the Data Universe of Companies')
-    filtered_data = get_filtered_data(df)
-    st.session_state['filtered_data'] = filtered_data
+    st.markdown('Use the Filters Below to Dynamically Narrow the Data Universe of Companies')
+    filters = create_filters(df)    
+    filtered_data = get_filtered_data(df, *filters)
+    st.session_state['filtered_data'] = filtered_data    
     stats = calculate_stats(df, filtered_data, selected_score)
     st.markdown('Stats for Current Filtered Universe')  
     col1 , col2, col3, col4 = st.columns(4)
@@ -60,26 +58,26 @@ def aggframe():
     col2.metric(label="UK Companies", value=f"{stats['total_filtered_uk_companies']:,}")
     col3.metric(label="Highest Oracle Score", value="{:.2f}".format(stats['highest_oracle_score']))
     col4.metric(label="Median Oracle Score", value="{:.2f}".format(stats['median_oracle_score']))
-    st.markdown('Data Table')
+    st.subheader('Data Table')
     filtered_df = filtered_data.sort_values(by='Oracle Score', ascending=False)
     st.data_editor(filtered_df, use_container_width=True, hide_index=True)
     csv = filtered_df.to_csv(index=False)
     st.download_button(
         label="Download Filtered data as CSV",
-        data=csv,  # 'csv' is the CSV file data
+        data=csv,
         file_name='oraclecombfiltered.csv',
         mime='text/csv',
     )
 def analysis1():
     df = load_data('oraclecomb.csv')
-    filtered_data = get_filtered_data(df)
+    filtered_data = st.session_state['filtered_data']
     st.subheader('Select a Score Category to See its Distribution and the Top 5 Best Performing Companies')
     score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score']
+    filtered_data = st.session_state['filtered_data']
     selected_score = st.selectbox('Click To Select Score Category', score_columns)
     stats = calculate_stats(df, filtered_data, selected_score)
     st.markdown(f'Top 5 Companies for {selected_score}')
     st.caption(f'These are the Top 5 Companies on the {selected_score}. The arrow shows the distance from the median score value.')
-    filtered_data = st.session_state['filtered_data']
     top_5_companies = filtered_data.nlargest(5, selected_score)
     cols = st.columns(5) 
     for i, row in enumerate(top_5_companies.iterrows()):
@@ -90,13 +88,14 @@ def analysis1():
     for j in range(len(top_5_companies), num_of_columns):
         cols[j].empty()
     st.divider()
-    st.subheader('Swarm Chart of Filtered Metrics')
+    st.subheader(f'Swarm Chart of {selected_score}')
     st.markdown(f'This chart shows the distribution of scores for the {selected_score}.  Each industry type is colour coded. Hover over a value for more information including company name')          
     with st.expander('Click To Expand For More Information About Swarm Charts'):
             st.markdown('Swarm Charts are often used to display distribution on metrics.\n\n'
             'For example, in a business context, a swarm chart could display customer ratings for different products. Each dot represents a customer rating, and a dense cluster of dots at a high rating level indicates a well-received product.\n\n'
             'In our Case they show how companies by industry perform across our 4 Cs and the Oracle Score.\n\n'
             'Swarm charts can quickly highlight patterns in the distribution of scores. This makes them useful for understanding how the scores are distributed which assists in helping us get a feel for the general feel of the distribtution while clearly marking out potential outliers')
+    st.session_state['filtered_data'] = filtered_data
     swarm_plot = create_strip_plot(filtered_data, selected_score)
     st.plotly_chart(swarm_plot)
     st.divider()
@@ -164,8 +163,8 @@ def analysis1():
 
 
 
-    st.subheader(f"{selected_score} and Components by Industry")
-    st.markdown(f'This chart shows the Average Scores across Industries for {selected_score}.  Each industry type is colour coded. Filters on the Side Allow us to Isolate Specific Additional Characteristics')          
+    st.subheader(f"{selected_score} by Industry")
+    st.markdown(f'This chart shows the Average Scores across Industries for {selected_score}.  Each industry type is colour coded.')          
     stats = calculate_stats(df, filtered_data, selected_score)
     generate_chart(df, stats, selected_score, "industry")
     filtered_data2 = df.groupby('Country').filter(lambda x: len(x) > 20)
@@ -307,7 +306,7 @@ def deepdive():
 
     st.subheader(f'SDG Revenue Alignment - {option}')
     sdg_expander()
-    SDG_Impact_Alignment(df, selected_company)
+    SDG_Impact_Alignment(df, option)
 
 styles = {
     "container": {"margin": "0px !important", "padding": "0!important", "align-items": "stretch", "background-color": "#fafafa"},
@@ -339,8 +338,8 @@ menu = {
             'action': None, 'item_icon': 'tablet-landscape', 'submenu': {
                 'title': None,
                 'items': { 
-                    'Aggregate Filter' : {'action': aggframe, 'item_icon': 'funnel', 'submenu': None},
-                    'Analysis Tab 1' : {'action': analysis1, 'item_icon': 'file-earmark-check', 'submenu': None}
+                    'Filter Universe' : {'action': aggframe, 'item_icon': 'funnel', 'submenu': None},
+                    'Analyse Universe' : {'action': analysis1, 'item_icon': 'file-earmark-check', 'submenu': None}
                 },
                 'menu_icon': 'postcard',
                 'default_index': 0,
@@ -353,9 +352,8 @@ menu = {
             'action': None, 'item_icon': 'crosshair', 'submenu': {
                 'title': None,
                 'items': { 
-                    'Company Deep Dive' : {'action': deepdive, 'item_icon': 'radar', 'submenu': None},
-                    'SDG & Impact Alignment' : {'action': "", 'item_icon': 'rainbow', 'submenu': None},
-                },
+                    'Company Deep Dive' : {'action': deepdive, 'item_icon': 'radar', 'submenu': None}                
+                    },
                 'menu_icon': 'crosshair',
                 'default_index': 0,
                 'with_view_panel': 'main',
@@ -407,5 +405,3 @@ def show_menu(menu):
 
 show_menu(menu)
 st.write('Kian 2024. :gear: :mag: for Oracle.')
-
-
