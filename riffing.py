@@ -11,7 +11,7 @@ import Levenshtein
 from streamlit_option_menu import option_menu
 from streamlit_server_state import server_state, server_state_lock
 import streamlit_shadcn_ui as ui
-from utils import display_columns, load_data, calculate_stats, calculate_metrics, calculate_country_metrics, selected_score, create_strip_plot, generate_chart, create_company_selectbox, create_gauge_options, create_sdg_chart, sdg_expander, find_closest_match, plot_choropleth, plot_bar_chart, filter_dataframe
+from utils import display_columns, get_filtered_data, load_data, calculate_stats, calculate_metrics, calculate_country_metrics, selected_score, create_strip_plot, generate_chart, create_company_selectbox, create_gauge_options, create_sdg_chart, sdg_expander, find_closest_match, plot_choropleth, plot_bar_chart, filter_dataframe
 
 st.set_page_config(page_title="Oracle Partnerships with Purpose Tool", page_icon="🔍", layout="wide", initial_sidebar_state="expanded")
 df = load_data('oraclecomb.csv')
@@ -41,40 +41,6 @@ def intro_page():
                 '**To Get Started** :page_facing_up: Use the **sidebar** on the left of the page to start exploring.')
     st.divider()
 
-##create radar chart
-def create_radar_chart(df, scores, score_columns, selected_company, option, show_median=False, show_comparison=False):
-    radar_data = pd.DataFrame(dict(Score=scores, Dimension=score_columns))
-    radar_data['angle'] = radar_data['Score'] / radar_data['Score'].sum() * 2 * math.pi
-    fig = go.Figure()
-    fig.add_trace(go.Scatterpolar(
-        r=scores,
-        theta=score_columns,
-        fill='toself',
-        name=f'{option}'))
-    if show_median:
-        median_scores = df[score_columns].median().tolist()
-        fig.add_trace(go.Scatterpolar(
-            r=median_scores,
-            theta=score_columns,
-            fill='toself',
-            name='Median Pillar Scores',
-            marker=dict(color='rgba(255, 0, 0, 0.5)')
-        ))
-    if show_comparison:
-        compare_scores = df[df['Company'] == selected_company][score_columns].iloc[0].tolist()
-        fig.add_trace(go.Scatterpolar(
-            r=compare_scores,
-            theta=score_columns,
-            fill='toself',
-            name=selected_company))
-    fig.update_layout(polar=dict(
-        radialaxis=dict(visible=True, range=[0, 100])), showlegend=True,
-        legend=dict(
-            yanchor="top",
-            y=0.5,
-            xanchor="left",
-            x=0))
-    return fig
 
 def aggframe(): 
     st.subheader(':sleuth_or_spy: Filters')
@@ -333,44 +299,30 @@ def deepdive():
             'Radar charts can quickly highlight areas of strength and weakness. This makes them useful in situations where you want to assess the overall balance of a subject\s attributes, like is a company performing well on one metric but abysmally on another?\n\n'
             'One of the most significant functions of radar charts is their ability to overlay multiple subjects for direct comparison.\n\n'
             'This overlay can provide a clear visual representation of how different subjects compare across the same set of variables. For example, you could overlay the performance metrics of different departments within a company to see which areas each department excels or needs improvement in.')
+    with col2: 
+            st.markdown('')
+            st.markdown('')
+            st.markdown('')
+            st.markdown('')
+            col1, col2 = st.columns([1, 1])
+            with col1:
+                show_median = st.toggle('Show Median Scores', value=False)
+            with col2:
+                show_comparison = st.toggle('Show Selected Comparator', value=False)
+            radar_chart = create_radar_chart(df, scores, score_columns, selected_company, option, show_median, show_comparison)
+            st.plotly_chart(radar_chart)
+            st.divider()
 
-def SDG_Impact_Alignment():
-    st.markdown('')
-    st.markdown('')
-    st.markdown('')
-    st.markdown('')
-    col1, col2 = st.columns([1, 1])
-    with col1:
-        show_median = st.toggle('Show Median Scores', value=False)
-    with col2:
-        show_comparison = st.toggle('Show Selected Comparator', value=False)
-    radar_chart = create_radar_chart(df, scores, score_columns, selected_company, option, show_median, show_comparison)
-    st.plotly_chart(radar_chart)
-    st.divider()
     st.subheader(f'SDG Revenue Alignment - {option}')
     sdg_expander()
-    option = selected_company
-    show_all_data = st.toggle("Show All Data", value=True)
-    fig, largest_aligned_sdg, largest_aligned_value, largest_misaligned_sdg, largest_misaligned_value = create_sdg_chart(company_data, show_all_data)
-    col1, col2 = st.columns([1, 1])
-    with col1:
-        st.markdown("Largest SDG Detraction")
-        st.markdown(f"###### {largest_misaligned_sdg if largest_misaligned_sdg else 'None'}   {largest_misaligned_value:.0%}")
-    with col2:
-        st.markdown("Largest SDG Contribution")
-        st.markdown(f"###### {largest_aligned_sdg if largest_aligned_sdg else 'None'} - {largest_aligned_value:.0%}")
-    st.markdown('')
-    st.markdown(f"#### Plotted Revenue Alignment/Misalignment to SDGs")
-    st.plotly_chart(fig)
-    
+    SDG_Impact_Alignment()
+
 styles = {
     "container": {"margin": "0px !important", "padding": "0!important", "align-items": "stretch", "background-color": "#fafafa"},
     "icon": {"color": "black", "font-size": "16px"}, 
     "nav-link": {"font-size": "16px", "text-align": "left", "margin":"0px", "--hover-color": "#eee"},
     "nav-link-selected": {"background-color": "lightblue", "font-size": "16px", "font-weight": "normal", "color": "black", },
 }
-
-
 
 st.subheader('Oracle Partnerships with Purpose Tool')
 menu = {
