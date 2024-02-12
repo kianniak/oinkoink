@@ -69,15 +69,13 @@ def filter_dataframe(df, b_corp_filter, company_names, regions, industries, comp
         temp_df = temp_df[(temp_df['Collaboration Score'] >= collaboration_range[0]) & (temp_df['Collaboration Score'] <= collaboration_range[1])]
     return temp_df
 
-def get_filtered_data(df):
-    # B Corp filter
-    is_b_corp = ui.checkbox(default_checked=False, label='Only Display Designated B Corps')
-    b_corp_filter = 'Yes' if is_b_corp else None
-
+def create_filters(df):
     # Company and score filters
     col1, col2 = st.columns(2, gap="small")
     with col1:
         with st.expander('Company Trait Filters'):
+            is_b_corp = st.checkbox(value=False, label='Only Display Designated B Corps', key='b_corp')
+            b_corp_filtered = 'Yes' if is_b_corp else None
             selected_companies = st.multiselect('Select by Company Name', options=df['Company'].unique(), key='company_name')
             selected_regions = st.multiselect('Select by Region', options=df['Region'].unique(), key='region')
             selected_industries = st.multiselect('Select by Industry', options=df['Industry'].unique(), key='industry')
@@ -90,11 +88,14 @@ def get_filtered_data(df):
             selected_conduct = st.slider('Conduct Score', min_value=0, max_value=100, value=(0, 100))
             selected_collaboration = st.slider('Collaboration Score', min_value=0, max_value=100, value=(0, 100))
 
-    # Filter dataframe
-    filtered_data = filter_dataframe(df, b_corp_filter, selected_companies, selected_regions, selected_industries, selected_size, selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration)
+    return b_corp_filtered, selected_companies, selected_regions, selected_industries, selected_size, selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration
 
+def get_filtered_data(df, b_corp_filtered, selected_companies, selected_regions, selected_industries, selected_size, selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration):
+    # Filter dataframe
+    filtered_data = filter_dataframe(df, b_corp_filtered, selected_companies, selected_regions, selected_industries, selected_size, selected_oracle, selected_culture, selected_capacity, selected_conduct, selected_collaboration)
     return filtered_data
-filtered_data = get_filtered_data(df)
+
+
 ###Score Checking
 company_data  = None
 score_columns = ['Oracle Score', 'Culture Score', 'Capacity Score', 'Conduct Score', 'Collaboration Score'] 
@@ -154,7 +155,7 @@ def calculate_stats(df, filtered_data, selected_score):
         "overall_average_region": overall_average_region,
         "overall_average_size": overall_average_size}
 
-def generate_chart(df, stats, selected_score, chart_type):
+def generate_chart(filtered_data, stats, selected_score, chart_type):
     stats = {}
     stats[selected_score] = calculate_stats(df, filtered_data, selected_score)
     if selected_score not in df.columns:
@@ -483,13 +484,17 @@ def create_sdg_chart(df, show_all_data):
                 name=f'SDG {i} Alignment',
                 orientation='h',
                 marker_color=colors[i % len(colors)],
+                text=[f'SDG {i} Aligned: {aligned_value*100:.2f}%' if aligned_value != 0 else ''],  # Conditionally include SDG in the text
+                textposition='outside'  # Display the text outside the bars
             ), 1, 2)
             fig.add_trace(go.Bar(
                 y=[f'SDG {i}'],
                 x=[misaligned_value],
                 name=f'',
                 orientation='h',
-                marker_color=colors[i % len(colors)]
+                marker_color=colors[i % len(colors)],
+                text=[f'SDG {i} Misaligned: {misaligned_value*100:.2f}%' if misaligned_value != 0 else ''],  
+                textposition='outside'  # Display the text outside the bars
             ), 1, 1)
             sdg_labels = [f'Sdg {i}' for i in range(1, 16) if f'Sdg {i}: Aligned' in df.columns or f'Sdg {i}: Misaligned' in df.columns]
             fig.update_layout(showlegend=False,
@@ -503,8 +508,12 @@ def create_sdg_chart(df, show_all_data):
             fig.update_yaxes(tickvals=sdg_labels, ticktext=sdg_labels, autorange="reversed", row=1, col=1)
             fig.update_yaxes(tickvals=sdg_labels, ticktext=sdg_labels, autorange="reversed", row=1, col=2)
     return fig, largest_aligned_sdg, largest_aligned_value, largest_misaligned_sdg, largest_misaligned_value
-def SDG_Impact_Alignment(df, selected_company):
-    company_data = df[df['Company'] == selected_company]
+def SDG_Impact_Alignment(df, option):
+    company_data = df[df['Company'] == option]
+    sdg_columns = [f'SDG {i}: Aligned' for i in range(1, 16)] + [f'SDG {i}: Misaligned' for i in range(1, 16)]
+    if company_data[sdg_columns].empty or company_data[sdg_columns].isna().all().all():
+        st.warning('No SDG data available for this company.')
+        return
     show_all_data = st.toggle("Show All Data", value=True)
     fig, largest_aligned_sdg, largest_aligned_value, largest_misaligned_sdg, largest_misaligned_value = create_sdg_chart(company_data, show_all_data)
     col1, col2 = st.columns([1, 1])
@@ -517,5 +526,8 @@ def SDG_Impact_Alignment(df, selected_company):
     st.markdown('')
     st.markdown(f"#### Plotted Revenue Alignment/Misalignment to SDGs")
     st.plotly_chart(fig)
+
+
+
 
 
