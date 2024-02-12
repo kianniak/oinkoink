@@ -303,7 +303,7 @@ menu = {
                 'menu_icon': 'filter-circle',
                 'default_index': 0,
                 'with_view_panel': 'main',
-                'orientation': 'horizontal',
+                'orientation': 'vertical',
                 'styles': styles
             }
         },
