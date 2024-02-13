@@ -7,7 +7,11 @@ from streamlit_option_menu import option_menu
 from streamlit_server_state import server_state, server_state_lock
 from utils import create_filters, get_filtered_data, load_data, calculate_stats, calculate_metrics, SDG_Impact_Alignment, selected_score, create_radar_chart, create_strip_plot, generate_chart, create_company_selectbox, create_gauge_options, sdg_expander, find_closest_match, plot_choropleth
 
-
+st.set_page_config(
+    page_title="Oracle Partnerships with Purpose Filtering", 
+    page_icon="mag", 
+    layout="wide", 
+    initial_sidebar_state="expanded")
 
 df = load_data('oraclecomb.csv')
 ##function for IntroPage Text Wall
