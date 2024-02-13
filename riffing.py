@@ -12,7 +12,6 @@ st.set_page_config(
     page_icon="mag", 
     layout="wide", 
     initial_sidebar_state="expanded")
-
 df = load_data('oraclecomb.csv')
 ##function for IntroPage Text Wall
 def intro_page():
